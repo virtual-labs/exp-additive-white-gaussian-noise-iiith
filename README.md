@@ -1,24 +1,25 @@
 ## Introduction
 
 
-<b>Discipline | <b>Fill your discipline name here
+<b>Discipline | <b>Mathematics
 :--|:--|
-<b> Lab | <b> Fill your lab name here
-<b> Experiment|     <b> Fill your experiment name and number here
+<b> Lab | <b> Probability and Random Variable
+<b> Experiment|     <b> Additive White Gaussian Noise
 
 ### About the Experiment 
 
-Fill a brief description of this experiment here
+An Introduction to Poisson Process
 
-<b>Name of Developer | <b> Fill the name of experiment owner here 
+<b>Name of Developer | <b> Harsh Kapoor
 :--|:--|
-<b> Institute | <b>  
-<b> Email id|     <b>  
-<b> Department |  
+<b> Institute | <b>  IIIT Hyderabad
+<b> Email id|     <b>  harsh.kapoor@research.iiit.ac.in
+<b> Department |  ECE
 
 ### Contributors List
 
 SrNo | Name | Faculty or Student | Department| Institute | Email id
 :--|:--|:--|:--|:--|:--|
-1 | . | . | . | . | .
-2 | . | . | . | . | .
+1 | Gowtham Raghunath Kurri | Faculty | SPCRC | IIIT Hyderabad | gowtham.kurri@iiit.ac.in
+2 | Lalitha Vadlamani | Faculty | SPCRC| IIIT Hyderabad | lalitha.v@iiit.ac.in  
+3 | Harsh Kapoor | Student | SPCRC| IIIT Hyderabad | harsh.kapoor@research.iiit.ac.in
