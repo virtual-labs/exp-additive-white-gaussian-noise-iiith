@@ -8,13 +8,13 @@
 
 ### About the Experiment 
 
-An Introduction to Poisson Process
+An Introduction to AWGN and it's sources as well as properties
 
 <b>Name of Developer | <b> Harsh Kapoor
 :--|:--|
 <b> Institute | <b>  IIIT Hyderabad
 <b> Email id|     <b>  harsh.kapoor@research.iiit.ac.in
-<b> Department |  ECE
+<b> Department |  SPCRC
 
 ### Contributors List
 
