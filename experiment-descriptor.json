@@ -1,0 +1,58 @@
+{
+    "unit-type": "lu",
+    "label": "",
+    "basedir": ".",
+    "LaTeXinMD": true,
+    "units": [
+      {
+        "unit-type": "aim",
+        "label": "Aim",
+        "content-type": "text",
+        "source": "aim.md",
+        "target": "index.html"
+      },
+      {
+        "target": "theory.html",
+        "source": "theory.md",
+        "label": "Theory",
+        "unit-type": "task",
+        "content-type": "text"
+      },
+      {
+        "unit-type": "task",
+        "label": "Pretest",
+        "content-type": "assesment",
+        "source": "pretest.json",
+        "target": "pretest.html"
+      },
+      {
+        "target": "procedure.html",
+        "source": "procedure.md",
+        "label": "Procedure",
+        "unit-type": "task",
+        "content-type": "text"
+      },
+      {
+        "target": "exp1.html",
+        "source": "simulation/exp1.html",
+        "label": "Experiments",
+        "unit-type": "task",
+        "content-type": "simulation"
+      },
+      {
+        "unit-type": "task",
+        "label": "Posttest",
+        "content-type": "assesment",
+        "source": "posttest.json",
+        "target": "posttest.html"
+      },
+      {
+        "target": "references.html",
+        "source": "references.md",
+        "label": "References",
+        "unit-type": "task",
+        "content-type": "text"
+      }
+      
+    ]
+  }
