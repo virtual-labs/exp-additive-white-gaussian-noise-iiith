@@ -2,38 +2,106 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What does 'white' refer to in Additive White Gaussian Noise (AWGN)?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The amplitude is always constant",
+        "b": "The noise power is concentrated at one frequency",
+        "c": "The noise has equal power across all frequencies",
+        "d": "The noise only affects white-colored signals"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
-      },
-      "correctAnswer": "a",
-      "difficulty": "beginner"
-    },
-    {
-      "question": "This is a Sample Question 2?",
-      "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
-      },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. The amplitude of AWGN varies as a Gaussian distribution.",
+        "b": "Incorrect. That would be a narrowband noise.",
+        "c": "Correct. 'White' implies a flat power spectral density (PSD) over all frequencies. <a href='https://en.wikipedia.org/wiki/White_noise'>Read more</a>",
+        "d": "Incorrect. AWGN is color-independent."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"
+    },
+    {
+      "question": "Which statistical distribution characterizes the amplitude of AWGN in time domain?",
+      "answers": {
+        "a": "Uniform distribution",
+        "b": "Poisson distribution",
+        "c": "Gaussian distribution",
+        "d": "Exponential distribution"
+      },
+      "explanations": {
+        "a": "Incorrect. Uniform distributions are not used for thermal noise modeling.",
+        "b": "Incorrect. Poisson is for discrete events like photon counts.",
+        "c": "Correct. AWGN follows a Gaussian (normal) distribution in amplitude. <a href='https://en.wikipedia.org/wiki/Gaussian_noise'>See reference</a>",
+        "d": "Incorrect. Exponential distribution is used for inter-arrival times in Poisson processes."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "How does thermal noise in resistors relate to AWGN?",
+      "answers": {
+        "a": "It is non-Gaussian and non-stationary",
+        "b": "It is modeled as AWGN with a flat PSD due to random thermal agitation",
+        "c": "It has a narrowband PSD centered at 1 kHz",
+        "d": "It is deterministic and periodic"
+      },
+      "explanations": {
+        "a": "Incorrect. Thermal noise is modeled as stationary Gaussian noise.",
+        "b": "Correct. Thermal noise results from random electron motion and has white Gaussian characteristics. <a href='https://en.wikipedia.org/wiki/Thermal_noise'>More info</a>",
+        "c": "Incorrect. The PSD is not centered; it's flat (white).",
+        "d": "Incorrect. Noise is inherently random, not periodic."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which of the following best describes the autocorrelation function Rn(τ) of ideal AWGN?",
+      "answers": {
+        "a": "A decaying exponential",
+        "b": "A sinc function",
+        "c": "A delta function at zero lag",
+        "d": "A cosine wave"
+      },
+      "explanations": {
+        "a": "Incorrect. That is for bandlimited or colored noise.",
+        "b": "Incorrect. Sinc function corresponds to rectangular PSDs (not infinite).",
+        "c": "Correct. AWGN is uncorrelated in time, so its autocorrelation is Rn(τ) = (N0/2) × δ(τ). <a href='https://en.wikipedia.org/wiki/Additive_white_Gaussian_noise#Mathematical_description'>See explanation</a>",
+        "d": "Incorrect. Cosine is periodic, not characteristic of white noise."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Why does the power spectral density (PSD) of AWGN appear flat across frequencies?",
+      "answers": {
+        "a": "Because it contains harmonics of the input signal",
+        "b": "Due to its deterministic structure",
+        "c": "Because its autocorrelation is a delta function",
+        "d": "Because it is sampled at Nyquist rate"
+      },
+      "explanations": {
+        "a": "Incorrect. AWGN is not harmonic or signal-dependent.",
+        "b": "Incorrect. AWGN is not deterministic.",
+        "c": "Correct. A delta-function autocorrelation implies a constant (flat) Fourier transform, i.e., flat PSD. <a href='https://en.wikipedia.org/wiki/Power_spectral_density'>See more</a>",
+        "d": "Incorrect. Sampling rate affects aliasing, not PSD shape inherently."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a communication system, how does AWGN affect the performance at high SNR levels?",
+      "answers": {
+        "a": "It becomes negligible and introduces no bit errors",
+        "b": "It causes significant inter-symbol interference",
+        "c": "It may still introduce errors due to its unbounded nature",
+        "d": "It gets filtered out completely at the receiver"
+      },
+      "explanations": {
+        "a": "Incorrect. Even at high SNR, rare but large deviations from the mean can cause errors.",
+        "b": "Incorrect. Inter-symbol interference is caused by channel effects, not AWGN.",
+        "c": "Correct. Although rare, the Gaussian distribution's tails are non-zero and can introduce occasional errors. <a href='https://en.wikipedia.org/wiki/Gaussian_noise'>More on Gaussian tails</a>",
+        "d": "Incorrect. Filtering reduces bandwidth, but cannot eliminate noise fully."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
     }
   ]
 }
