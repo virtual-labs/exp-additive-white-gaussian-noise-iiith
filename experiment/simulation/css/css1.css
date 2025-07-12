@@ -102,3 +102,21 @@ body {
   position: relative;
   height: 250px;
 }
+
+/* Add these styles to your existing css1.css file */
+
+.conductor-bg {
+    position: relative;
+    height: 200px;
+    background-image: url('experiment\simulation\images\conductor.png'); /* Path to your conductor image */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.electron-img {
+    position: absolute;
+    width: 15px;  /* Size of the electron image */
+    height: 15px; /* Size of the electron image */
+    user-select: none;
+}
