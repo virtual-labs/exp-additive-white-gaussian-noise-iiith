@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
+    <link rel="stylesheet" href="./css/css3.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax for rendering math symbols -->
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>AWGN Channel Simulation</title>
+</head>
+<body>
+<div class="container">
+    <div class="tasks-heading">Tasks</div>
+    <div class="v-tabs">
+        <ul>
+            <li><a href="exp1.html">Sub Experiment - 1</a></li>
+            <li><a href="exp2.html">Sub Experiment - 2</a></li>
+            <li class="active"><a href="exp3.html">Sub Experiment - 3</a></li>
+        </ul>
+    </div>
+    <div class="subheading-box">
+        <p class="title">Visualizing the AWGN Communication Channel</p>
+    </div>
+
+    <section id="main-experiment">
+        <div class="v-datalist-container components-list">
+            <h3 class="v-datalist-title">AWGN Channel Simulator</h3>
+
+            <!-- Controls Panel -->
+            <div class="white-boxed-panel control-panel-grid">
+                <div class="control-item">
+                    <label for="text-input" class="label">1. Message to Transmit:</label>
+                    <textarea id="text-input" class="textarea" rows="1">Test</textarea>
+                </div>
+                <div class="control-item">
+                    <label for="modulation-select" class="label">2. Modulation Scheme:</label>
+                    <div class="select is-primary is-fullwidth">
+                        <select id="modulation-select">
+                            <option value="qpsk">QPSK (2 bits/symbol)</option>
+                            <option value="16qam">16-QAM (4 bits/symbol)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-item-full-width">
+                    <!-- CORRECTED: Using MathJax syntax -->
+                    <label for="noise-slider" class="label">3. Channel Noise Variance \(\sigma^2\): <span id="noise-value" class="slider-value">0.05</span></label>
+                    <input id="noise-slider" type="range" min="0" max="0.5" value="0.05" step="0.005">
+                </div>
+            </div>
+
+            <!-- Information Panel -->
+            <div class="white-boxed-panel info-panel">
+                <div>
+                    <h4 class="v-datalist-subtitle info-title">Encoded Bitstream</h4>
+                    <p id="encoded-bits"></p>
+                </div>
+                <div>
+                    <h4 class="v-datalist-subtitle info-title">Decoded Message</h4>
+                    <p id="decoded-message"></p>
+                </div>
+            </div>
+
+            <!-- Plotting Grid -->
+            <div class="plots-container">
+                <div class="white-boxed-panel plot-wrapper">
+                    <h4 class="v-datalist-subtitle">A: Clean Signal Waveform</h4>
+                    <canvas id="cleanSignalChart"></canvas>
+                </div>
+                <div class="white-boxed-panel plot-wrapper">
+                    <h4 class="v-datalist-subtitle">B: Additive Noise Waveform</h4>
+                    <canvas id="noiseSignalChart"></canvas>
+                </div>
+                <div class="white-boxed-panel plot-wrapper">
+                    <h4 class="v-datalist-subtitle">C: Received Noisy Signal (A + B)</h4>
+                    <canvas id="noisySignalChart"></canvas>
+                </div>
+                <div class="white-boxed-panel plot-wrapper">
+                    <h4 class="v-datalist-subtitle">D: Received Constellation</h4>
+                    <canvas id="constellationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="./js/script3.js"></script>
+</body>
+</html>

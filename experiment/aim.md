@@ -5,5 +5,6 @@ This experiment is divided into two parts -
 
 1. Thermal noise is additive white Gaussian
 2. Autocorrelation and power spectral density of AWGN
+3. Additive nature of the noise
 
 ---
