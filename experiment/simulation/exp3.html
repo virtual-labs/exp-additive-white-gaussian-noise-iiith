@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
     <link rel="stylesheet" href="./css/css3.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- MathJax for rendering math symbols -->
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <title>AWGN Channel Simulation</title>
+    <title>BPSK in an AWGN Channel</title>
 </head>
 <body>
 <div class="container">
@@ -22,32 +20,58 @@
         </ul>
     </div>
     <div class="subheading-box">
-        <p class="title">Visualizing the AWGN Communication Channel</p>
+        <p class="title">Visualizing 1D Digital Modulation (BPSK)</p>
     </div>
+
+    <!-- Instructions with Encoding Table -->
+    <div class="columns is-centered">
+      <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        <div class="v-collapsible-instruction-container v-instruction-container">
+          <div class="v-collapsible is-size-5">Instructions</div>
+          <div class="v-content" style="text-align: left; padding: 1rem 5%;">
+             <h4 style="font-weight: 600; font-size: 1.15em;">How It Works</h4>
+             <p>This simulator demonstrates how a simple digital message is transmitted over a noisy channel using <strong>Binary Phase Shift Keying (BPSK)</strong>.</p>
+            <ol style="margin-left: 2em; margin-top: 1rem;">
+                <li>Your message is converted into a stream of binary bits using the "Lite" 5-bit encoding scheme shown below.</li>
+                <li>For each bit, a signal level is chosen: <strong>-1V for a '0'</strong> and <strong>+1V for a '1'</strong>. This creates the clean "Transmitted Signal".</li>
+                <li>Random "Channel Noise" is generated.</li>
+                <li>The noise is added to the clean signal to create the "Received Signal".</li>
+                <li>The receiver looks at the noisy signal and makes a simple decision: if the voltage is <strong>positive</strong>, it decodes a '1'. If it's <strong>negative</strong>, it decodes a '0'.</li>
+                <li>Finally, the decoded bits are converted back into a message. Errors appear in red when the noise is strong enough to flip a decision.</li>
+            </ol>
+             <h4 style="font-weight: 600; font-size: 1.15em; margin-top: 1rem;">"Lite" 5-Bit Encoding Table</h4>
+             <p>Only capital letters (A-Z) and spaces are supported. Lowercase letters will be converted to uppercase.</p>
+             <table class="table is-bordered is-striped is-narrow is-hoverable" style="margin: 1rem auto;">
+                <thead><tr><th>Char</th><th>Bits</th><th>Char</th><th>Bits</th><th>Char</th><th>Bits</th><th>Char</th><th>Bits</th></tr></thead>
+                <tbody>
+                    <tr><td>A</td><td>00000</td> <td>H</td><td>00111</td> <td>O</td><td>01110</td> <td>V</td><td>10101</td></tr>
+                    <tr><td>B</td><td>00001</td> <td>I</td><td>01000</td> <td>P</td><td>01111</td> <td>W</td><td>10110</td></tr>
+                    <tr><td>C</td><td>00010</td> <td>J</td><td>01001</td> <td>Q</td><td>10000</td> <td>X</td><td>10111</td></tr>
+                    <tr><td>D</td><td>00011</td> <td>K</td><td>01010</td> <td>R</td><td>10001</td> <td>Y</td><td>11000</td></tr>
+                    <tr><td>E</td><td>00100</td> <td>L</td><td>01011</td> <td>S</td><td>10010</td> <td>Z</td><td>11001</td></tr>
+                    <tr><td>F</td><td>00101</td> <td>M</td><td>01100</td> <td>T</td><td>10011</td> <td>(space)</td><td>11010</td></tr>
+                    <tr><td>G</td><td>00110</td> <td>N</td><td>01101</td> <td>U</td><td>10100</td> <td></td><td></td></tr>
+                </tbody>
+             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br/>
 
     <section id="main-experiment">
         <div class="v-datalist-container components-list">
-            <h3 class="v-datalist-title">AWGN Channel Simulator</h3>
+            <h3 class="v-datalist-title">BPSK Channel Simulator</h3>
 
             <!-- Controls Panel -->
             <div class="white-boxed-panel control-panel-grid">
                 <div class="control-item">
-                    <label for="text-input" class="label">1. Message to Transmit:</label>
-                    <textarea id="text-input" class="textarea" rows="1">Test</textarea>
-                </div>
-                <div class="control-item">
-                    <label for="modulation-select" class="label">2. Modulation Scheme:</label>
-                    <div class="select is-primary is-fullwidth">
-                        <select id="modulation-select">
-                            <option value="qpsk">QPSK (2 bits/symbol)</option>
-                            <option value="16qam">16-QAM (4 bits/symbol)</option>
-                        </select>
-                    </div>
+                    <label for="text-input" class="label">1. Message to Transmit (A-Z and space):</label>
+                    <textarea id="text-input" class="textarea" rows="1">HELLO</textarea>
                 </div>
                 <div class="control-item-full-width">
-                    <!-- CORRECTED: Using MathJax syntax -->
-                    <label for="noise-slider" class="label">3. Channel Noise Variance \(\sigma^2\): <span id="noise-value" class="slider-value">0.05</span></label>
-                    <input id="noise-slider" type="range" min="0" max="0.5" value="0.05" step="0.005">
+                    <label for="noise-slider" class="label">2. Channel Noise Power (σ²): <span id="noise-value" class="slider-value">0.10</span></label>
+                    <input id="noise-slider" type="range" min="0" max="1.0" value="0.1" step="0.01">
                 </div>
             </div>
 
@@ -66,25 +90,28 @@
             <!-- Plotting Grid -->
             <div class="plots-container">
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">A: Clean Signal Waveform</h4>
+                    <h4 class="v-datalist-subtitle">A: Transmitted Signal</h4>
                     <canvas id="cleanSignalChart"></canvas>
                 </div>
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">B: Additive Noise Waveform</h4>
+                    <h4 class="v-datalist-subtitle">B: Channel Noise</h4>
                     <canvas id="noiseSignalChart"></canvas>
                 </div>
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">C: Received Noisy Signal (A + B)</h4>
+                    <h4 class="v-datalist-subtitle">C: Received Signal (A + B)</h4>
                     <canvas id="noisySignalChart"></canvas>
                 </div>
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">D: Received Constellation</h4>
+                    <h4 class="v-datalist-subtitle">D: 1D Constellation & Decision</h4>
                     <canvas id="constellationChart"></canvas>
                 </div>
             </div>
         </div>
     </section>
 </div>
+
+<!-- FIX: Add the missing script for virtual labs interactivity -->
+<script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
 <script src="./js/script3.js"></script>
 </body>
 </html>
