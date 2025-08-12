@@ -1,0 +1,326 @@
+/* --- UNIFIED STYLESHEET (style.css) --- */
+
+/* ----------------------------------------
+   Base & General Styling
+   ---------------------------------------- */
+body {
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    padding-top: 20px;
+}
+
+.tasks-heading {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #444;
+}
+
+/* ----------------------------------------
+   Unified Tab Navigation
+   ---------------------------------------- */
+.v-tabs ul {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+}
+.v-tabs li {
+    display: inline-block;
+    margin: 0;
+}
+.v-tabs a {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+.v-tabs li.active > a {
+    color: #3273dc;
+    border-bottom: 3px solid #3273dc;
+}
+.v-tabs a:hover {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+/* ----------------------------------------
+   Subheading & Instructions
+   ---------------------------------------- */
+.subheading-box {
+    background-color: #f7fdf7;
+    border-left: 4px solid #3c763d;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0 1.5rem 0;
+    border-radius: 4px;
+}
+.subheading-box .title {
+    color: #3c763d;
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 600;
+}
+.v-instruction-container .v-content {
+    text-align: left;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+/* ----------------------------------------
+   Main Experiment Container
+   ---------------------------------------- */
+.v-datalist-container.components-list {
+    border: 2px solid #8dc63f;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fafafa;
+}
+.v-datalist-title, .v-datalist-subtitle {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-weight: 600;
+    color: #363636;
+}
+
+/* ----------------------------------------
+   Standardized Content Panel
+   ---------------------------------------- */
+.white-boxed-panel {
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+.white-boxed-panel:last-child {
+    margin-bottom: 0;
+}
+
+/* ----------------------------------------
+   Controls: Sliders & Buttons
+   ---------------------------------------- */
+.controls-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+}
+.field {
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    margin-bottom: 1rem;
+}
+.label {
+    display: block;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+.value-display {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 0.3rem;
+    color: #3273dc;
+}
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: #ddd;
+    outline: none;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3273dc;
+    cursor: pointer;
+}
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3273dc;
+    cursor: pointer;
+}
+.buttons.has-addons .button.is-primary, .button.is-medium {
+    background-color: #3273dc;
+    color: #ffffff;
+    border-color: #3273dc;
+}
+.buttons.has-addons .button {
+    border: 1px solid #ddd;
+}
+.buttons.has-addons .button:hover:not(.is-primary) {
+    background-color: #f0f0f0;
+    color: #333;
+}
+.button.is-primary {
+    background-color: #3273dc;
+    color: #ffffff;
+    border-color: transparent;
+    padding: 10px 24px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.button.is-primary:hover {
+    background-color: #275bb1;
+}
+
+/* ----------------------------------------
+   Chart, Animation & Observation Styling
+   ---------------------------------------- */
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 250px; /* Base minimum height */
+}
+canvas { /* Universal canvas styling */
+    width: 100% !important;
+    height: 100% !important;
+}
+#observations p, #observations div, #observations ul, #observations li {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin: 0 auto;
+    text-align: left;
+}
+#observations ul {
+    list-style-position: inside;
+}
+#observations .obs-title {
+    font-weight: bold;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+}
+#observations .correct {
+    color: #3c763d;
+}
+#observations .incorrect {
+    color: #a94442;
+}
+
+
+/* Specifics for Exp 2 */
+#animationContainer {
+    position: relative;
+    width: 100%;
+    height: 624px;
+    background-color: #fdfdfd;
+    border-radius: 4px;
+    border: 1px dashed #ccc;
+    overflow: hidden;
+}
+.nucleus-img {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+    transition: all 400ms ease-in-out;
+}
+
+/* Specifics for Exp 3 */
+#timelineContainer {
+    position: relative;
+    min-height: 130px;
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+}
+
+/* ----------------------------------------
+   Responsiveness
+   ---------------------------------------- */
+@media (max-width: 768px) {
+    .v-instruction-container .v-content {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    .chart-wrapper {
+        height: 350px;
+    }
+    #animationContainer {
+        height: 350px; /* Match chart height on mobile */
+    }
+}
+@media (max-width: 620px) {
+    .controls-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    .field {
+        width: 100%;
+        max-width: none;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ----------------------------------------
+   STYLES FOR ACF/PSD EXPERIMENT
+   ---------------------------------------- */
+.plot-selection-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+.plot-option {
+    border: 3px solid #dbdbdb;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    flex: 1;
+    min-width: 260px;
+    background-color: #fcfcfc;
+}
+.plot-option:hover {
+    border-color: #b5b5b5;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+.plot-option.selected {
+    border-color: #3273dc;
+    background-color: #f2f6fc;
+}
+.plot-option .chart-wrapper{
+    min-height: 200px;
+    height: 200px;
+}
+.plot-option .radio-label {
+    margin-top: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.check-button-container {
+    text-align: center;
+    margin-top: 1.5rem;
+}

@@ -5,126 +5,140 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
-  <link rel="stylesheet" href="./css/css1.css" />
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <link rel="stylesheet" href="./css/style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-  <title>AWGN - Autocorrelation & PSD</title>
+  <title>ACF and PSD of AWGN</title>
 </head>
-
 <body>
   <div class="container">
-    <div class="tasks-heading">AWGN</div>
-
-    <div class="v-tabs">
-      <ul>
-        <li><a href="exp1.html">Experiment 1: Thermal Noise is Gaussian</a></li>
-        <li class="active"><a href="exp2.html">Experiment 2: Autocorrelation & PSD</a></li>
-        <li><a href="exp3.html">Experiment 3: Additive Nature of Noise</a></li>
-      </ul>
-    </div>
-
-    <div class="subheading-box">
-      <p class="title">Experiment 2: Autocorrelation and Power Spectral Density of AWGN</p>
-    </div>
-
+    <div class="tasks-heading">Tasks</div>
     <div class="columns is-centered">
       <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        
+        <div class="v-tabs">
+          <ul>
+            <li><a href="exp1.html">Sub Experiment - 1</a></li>
+            <li class="active"><a href="exp2.html">Sub Experiment - 2</a></li>
+            <li><a href="exp3.html">Sub Experiment - 3</a></li>
+          </ul>
+        </div>
+
+        <div class="subheading-box">
+          <p class="title">Identifying ACF and PSD of Additive White Gaussian Noise (AWGN)</p>
+        </div>
+
         <div class="v-collapsible-instruction-container v-instruction-container">
-          <div class="v-collapsible is-size-5">Instructions</div>
-          <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
-            <ul style="list-style: disc; font-size: 1em; line-height: 1.6;">
-                <li>
-                    This experiment demonstrates two key statistical properties of an AWGN signal.
-                </li>
-                <li>
-                    Use the **Noise Power** slider to set the variance (\(\sigma^2\)) of the Gaussian noise signal. Press **Generate New Signal** to create a new realization.
-                </li>
-                <li>
-                    The **Autocorrelation Plot** shows how correlated the signal is with a time-shifted version of itself. For white noise, this should be a sharp impulse at a time lag of 0, and nearly zero everywhere else.
-                </li>
-                <li>
-                    The **Power Spectral Density (PSD)** plot is the Fourier Transform of the autocorrelation. For white noise, the power is distributed evenly across all frequencies, resulting in a flat spectrum.
-                </li>
-                <li>
-                    Use the **Frequency Band** sliders to select a range of interest and see the calculated noise power within that band in the Observations panel.
-                </li>
+          <div class="v-collapsible is-size-4">Instructions</div>
+          <div class="v-content">
+            <p>This experiment tests your understanding of the fundamental properties of Additive White Gaussian Noise (AWGN), a key concept in communication systems and signal processing.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">Objective</h4>
+            <ul style="list-style: disc">
+              <li>To correctly identify the Autocorrelation Function (ACF) and Power Spectral Density (PSD) of ideal white noise from a set of options.</li>
+            </ul>
+            <h4 style="font-weight: 600; font-size: 1.15em;">Key Concepts</h4>
+            <ul style="list-style: disc;">
+              <li><strong>Additive White Gaussian Noise (AWGN):</strong>
+                  <ul>
+                      <li><strong>White:</strong> The "white" property implies that the noise has constant power across all frequencies. Its Power Spectral Density (PSD) is flat.</li>
+                      <li><strong>Uncorrelated:</strong> A direct consequence of the "white" property is that the noise values at any two different points in time are completely uncorrelated. Its Autocorrelation Function (ACF) is an impulse.</li>
+                  </ul>
+              </li>
+              <li><strong>Autocorrelation Function (ACF):</strong> Measures the correlation of a signal with a delayed version of itself. For white noise, this should be non-zero only at a zero time lag (τ=0).</li>
+              <li><strong>Power Spectral Density (PSD):</strong> Describes how the power of a signal is distributed over frequency. For white noise, this should be constant for all frequencies.</li>
+            </ul>
+            <h4 style="font-weight: 600; font-size: 1.15em;">How to Interact</h4>
+            <ul style="list-style: disc;">
+                <li>For each section (ACF and PSD), examine the three plots provided. The plots include slight randomness to simulate real-world measurements and their positions are randomized on each page load.</li>
+                <li>Click on the plot you believe is correct. A blue border will highlight your selection.</li>
+                <li>Click the "Check" button for that section.</li>
+                <li>The border of your selection will turn red (incorrect) or green (correct). If you are wrong, the correct plot's border will turn green. The plot colors themselves will not change.</li>
+                <li>Read the feedback in the "Observations" panel to understand why your choice was right or wrong.</li>
             </ul>
           </div>
         </div>
-      </div>
-    </div>
-    <br />
+        <br />
 
-    <section id="page2">
-      <div class="columns is-centered">
-        <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        <section id="page2">
           <div class="v-datalist-container components-list">
-            <h3 class="v-datalist-title" style="text-align: center;">
-              AWGN Analysis
-            </h3>
-
-            <div class="white-boxed-panel" style="margin: 0 1% 1.5rem 1%;">
-              <div class="controls-container">
-                <div class="field">
-                  <label for="noisePower" class="label">Noise Power (σ²):</label>
-                  <input type="range" id="noisePower" min="0.1" max="5" step="0.1" value="1.0" class="slider" />
-                  <span id="noisePowerVal" class="value-display">1.0</span>
+            <h3 class="v-datalist-title">AWGN Properties Identifier</h3>
+            
+            <!-- ACF SELECTION PANEL -->
+            <div class="white-boxed-panel">
+              <h4 class="v-datalist-subtitle">Select the correct Autocorrelation Function (ACF) for White Noise</h4>
+              <div id="acf-selection" class="plot-selection-container">
+                <!-- JS will create plots here -->
+                <div id="acf-option-1" class="plot-option" data-value="">
+                  <div class="chart-wrapper"><canvas id="acfChart1"></canvas></div>
+                  <div class="radio-label">
+                    <input type="radio" name="acf_choice" value="" id="acf_radio1">
+                    <label for="acf_radio1">ACF Option A</label>
+                  </div>
                 </div>
-                <div class="field">
-                    <label class="label">Action:</label>
-                    <div class="buttons has-addons is-centered">
-                      <button id="generateBtn" class="button is-primary">Generate New Signal</button>
-                    </div>
+                <div id="acf-option-2" class="plot-option" data-value="">
+                  <div class="chart-wrapper"><canvas id="acfChart2"></canvas></div>
+                  <div class="radio-label">
+                    <input type="radio" name="acf_choice" value="" id="acf_radio2">
+                    <label for="acf_radio2">ACF Option B</label>
+                  </div>
                 </div>
+                <div id="acf-option-3" class="plot-option" data-value="">
+                  <div class="chart-wrapper"><canvas id="acfChart3"></canvas></div>
+                  <div class="radio-label">
+                    <input type="radio" name="acf_choice" value="" id="acf_radio3">
+                    <label for="acf_radio3">ACF Option C</label>
+                  </div>
+                </div>
+              </div>
+              <div class="check-button-container">
+                <button id="checkAcfBtn" class="button is-primary">Check ACF</button>
               </div>
             </div>
 
-            <!-- Plots Panel -->
-            <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
-                <div class="columns">
-                    <div class="column">
-                        <h5 class="has-text-centered is-size-5">Autocorrelation Function</h5>
-                        <div class="chart-wrapper" style="height: 350px;">
-                            <canvas id="autocorrelationChart"></canvas>
-                        </div>
+            <!-- PSD SELECTION PANEL -->
+            <div class="white-boxed-panel">
+                <h4 class="v-datalist-subtitle">Select the correct Power Spectral Density (PSD) for White Noise</h4>
+                <div id="psd-selection" class="plot-selection-container">
+                  <!-- JS will create plots here -->
+                  <div id="psd-option-1" class="plot-option" data-value="">
+                    <div class="chart-wrapper"><canvas id="psdChart1"></canvas></div>
+                    <div class="radio-label">
+                        <input type="radio" name="psd_choice" value="" id="psd_radio1">
+                        <label for="psd_radio1">PSD Option A</label>
                     </div>
-                    <div class="column">
-                        <h5 class="has-text-centered is-size-5">Power Spectral Density (PSD)</h5>
-                        <div class="chart-wrapper" style="height: 350px;">
-                            <canvas id="psdChart"></canvas>
-                        </div>
+                  </div>
+                  <div id="psd-option-2" class="plot-option" data-value="">
+                    <div class="chart-wrapper"><canvas id="psdChart2"></canvas></div>
+                    <div class="radio-label">
+                        <input type="radio" name="psd_choice" value="" id="psd_radio2">
+                        <label for="psd_radio2">PSD Option B</label>
                     </div>
+                  </div>
+                  <div id="psd-option-3" class="plot-option" data-value="">
+                    <div class="chart-wrapper"><canvas id="psdChart3"></canvas></div>
+                    <div class="radio-label">
+                        <input type="radio" name="psd_choice" value="" id="psd_radio3">
+                        <label for="psd_radio3">PSD Option C</label>
+                    </div>
+                  </div>
                 </div>
-            </div>
-            
-            <!-- Band Selection Panel -->
-            <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
-                <h4 class="v-datalist-subtitle">Calculate Power in a Frequency Band</h4>
-                 <div class="controls-container">
-                    <div class="field">
-                      <label for="startFreq" class="label">Start Frequency:</label>
-                      <input type="range" id="startFreq" min="0" max="511" step="1" value="50" class="slider" />
-                      <span id="startFreqVal" class="value-display">50</span>
-                    </div>
-                    <div class="field">
-                        <label for="endFreq" class="label">End Frequency:</label>
-                        <input type="range" id="endFreq" min="1" max="512" step="1" value="150" class="slider" />
-                        <span id="endFreqVal" class="value-display">150</span>
-                    </div>
+                <div class="check-button-container">
+                  <button id="checkPsdBtn" class="button is-primary">Check PSD</button>
                 </div>
             </div>
 
-            <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
+            <!-- OBSERVATIONS PANEL -->
+            <div class="white-boxed-panel">
               <h4 class="v-datalist-subtitle">Observations</h4>
-              <div id="observations" style="padding-top: 0.5rem; text-align: center;"></div>
+              <div id="observations" style="padding: 10px; min-height: 100px;">
+                <p>Your feedback will appear here after you check your selection.</p>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
 
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
   <script src="./js/auto_psd.js"></script>
 </body>

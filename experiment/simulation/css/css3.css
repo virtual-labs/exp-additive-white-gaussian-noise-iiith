@@ -66,23 +66,18 @@ body {
 input[type="range"] {
     width: 100%;
 }
-.textarea {
-    resize: none; /* No vertical resize */
+/* MODIFIED: Use .input and apply monospace font for bitstream */
+.input {
     font-family: 'Courier New', Courier, monospace;
     font-size: 1.2em;
-    text-transform: uppercase;
+    letter-spacing: 2px; /* Add spacing for readability */
 }
 
 /* Info Panel for bits and text */
 .info-panel {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-}
-@media (min-width: 768px) {
-    .info-panel {
-        grid-template-columns: 3fr 1fr; /* More space for bitstream */
-    }
+    grid-template-columns: 1fr 1fr; /* Equal columns for bitstreams */
+    gap: 1.5rem; /* Increased gap */
 }
 .info-panel .info-title {
     margin-bottom: 0.5rem;
@@ -96,16 +91,47 @@ input[type="range"] {
     padding: 0.75rem;
     border-radius: 4px;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 1.1em;
+    font-size: 1.2em;
     word-wrap: break-word;
     min-height: 48px;
     letter-spacing: 1px;
 }
-#decoded-message .error {
+/* MODIFIED: Styling for errors in the decoded bitstream */
+#decoded-bits .error {
     color: #fff;
     background-color: #ff3860;
     font-weight: bold;
     padding: 2px 0;
+}
+
+/* ADDED: Observations Panel styling */
+#observations-panel {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    text-align: center;
+}
+#observations p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+#observations .correct {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+#observations .incorrect {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+#observations .initial {
+    color: #555;
+    background-color: #e9ecef;
+    border-color: #ced4da;
 }
 
 /* Plots Layout */
