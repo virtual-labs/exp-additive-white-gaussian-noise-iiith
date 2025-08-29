@@ -324,3 +324,11 @@ canvas { /* Universal canvas styling */
     text-align: center;
     margin-top: 1.5rem;
 }
+
+.electron-img {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 1;
+}

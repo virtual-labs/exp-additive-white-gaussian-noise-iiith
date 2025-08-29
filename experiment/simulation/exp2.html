@@ -51,8 +51,8 @@
                 <li>For each section (ACF and PSD), examine the three plots provided. The plots include slight randomness to simulate real-world measurements and their positions are randomized on each page load.</li>
                 <li>Click on the plot you believe is correct. A blue border will highlight your selection.</li>
                 <li>Click the "Check" button for that section.</li>
-                <li>The border of your selection will turn red (incorrect) or green (correct). If you are wrong, the correct plot's border will turn green. The plot colors themselves will not change.</li>
-                <li>Read the feedback in the "Observations" panel to understand why your choice was right or wrong.</li>
+                <li>The border of your selection will turn red (incorrect) or green (correct). If you are wrong, the correct plot's border will turn green.</li>
+                <li>Read the feedback in the observation panel directly below the plots to understand why your choice was right or wrong.</li>
             </ul>
           </div>
         </div>
@@ -92,6 +92,10 @@
               <div class="check-button-container">
                 <button id="checkAcfBtn" class="button is-primary">Check ACF</button>
               </div>
+              <!-- ACF Observations Area -->
+              <div id="acf-observations" style="padding: 10px; min-height: 80px; margin-top: 1rem; border-top: 1px solid #eee;">
+                <p>Your feedback for the ACF selection will appear here.</p>
+              </div>
             </div>
 
             <!-- PSD SELECTION PANEL -->
@@ -124,14 +128,10 @@
                 <div class="check-button-container">
                   <button id="checkPsdBtn" class="button is-primary">Check PSD</button>
                 </div>
-            </div>
-
-            <!-- OBSERVATIONS PANEL -->
-            <div class="white-boxed-panel">
-              <h4 class="v-datalist-subtitle">Observations</h4>
-              <div id="observations" style="padding: 10px; min-height: 100px;">
-                <p>Your feedback will appear here after you check your selection.</p>
-              </div>
+                 <!-- PSD Observations Area -->
+                <div id="psd-observations" style="padding: 10px; min-height: 80px; margin-top: 1rem; border-top: 1px solid #eee;">
+                    <p>Your feedback for the PSD selection will appear here.</p>
+                </div>
             </div>
 
           </div>

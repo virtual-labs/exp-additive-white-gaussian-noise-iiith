@@ -153,3 +153,10 @@ input[type="range"] {
     width: 100%;
     height: 100%;
 }
+
+.scale-wrapper {
+    transform: scale(0.8);
+    transform-origin: top center; /* Keeps scaling centered at the top */
+    width: 100%; /* Compensate for shrink so it aligns */
+    margin: 0 auto;
+}

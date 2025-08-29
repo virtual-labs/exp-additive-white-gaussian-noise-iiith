@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const observationsDiv = document.getElementById('observations');
     const charts = {}; // To hold chart instances
     const initialBlue = '#3273dc';
 
@@ -131,8 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const checkAnswer = (groupPrefix, correctType) => {
+    const checkAnswer = (groupPrefix, correctType, observationsId) => {
+        const observationsDiv = document.getElementById(observationsId);
         resetPlotStyles(`${groupPrefix}-selection`);
+        
         const selected = document.querySelector(`input[name="${groupPrefix}_choice"]:checked`);
         if (!selected) {
             observationsDiv.innerHTML = `<p>Please select a ${groupPrefix.toUpperCase()} plot first.</p>`;
@@ -177,6 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('click', (e) => handleSelection(e.currentTarget.parentElement.id, e.currentTarget));
     });
     
-    document.getElementById('checkAcfBtn').addEventListener('click', () => checkAnswer('acf', 'impulse'));
-    document.getElementById('checkPsdBtn').addEventListener('click', () => checkAnswer('psd', 'constant'));
+    document.getElementById('checkAcfBtn').addEventListener('click', () => checkAnswer('acf', 'impulse', 'acf-observations'));
+    document.getElementById('checkPsdBtn').addEventListener('click', () => checkAnswer('psd', 'constant', 'psd-observations'));
 });
