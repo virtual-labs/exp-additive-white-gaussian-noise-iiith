@@ -36,8 +36,9 @@ const observationsDiv = document.getElementById("observations");
  * The result is converted from Volts^2 to (microVolts)^2 by multiplying by 1e12.
  */
 function calculateTheoreticalVariance() {
+    // THIS CALCULATION IS NOW PHYSICALLY CORRECT.
     const variance_volts_squared = 4 * BOLTZMANN_K * TEMPERATURE_K * RESISTANCE_R * BANDWIDTH_B;
-    // Correctly calculated value is ~0.00828 (μV)^2
+    // The result is ~0.00828 (μV)^2
     return variance_volts_squared * 1e12; 
 }
 
@@ -112,7 +113,6 @@ function createElectrons() {
 
     for (let i = 0; i < numElectrons; i++) {
         const img = document.createElement('img');
-        // Make sure you have an 'electron.png' image in a relative './images/' folder
         img.src = './images/electron.png'; 
         img.className = 'electron-img';
         
@@ -135,12 +135,11 @@ function updateElectrons() {
     const w = animationContainer.clientWidth, h = animationContainer.clientHeight;
     const conductorTop = h * 0.1, conductorBottom = h * 0.9;
 
-    // --- PHYSICS CORRECTION ---
-    // These values are calibrated to ensure the steady-state variance of vx is 1.
+    // --- CALIBRATED PHYSICS ---
+    // These values ensure the steady-state variance of vx is 1, matching
+    // the assumption made in the collectVoltageSample function.
     const damping = 0.95;
-    // Variance of (Math.random() - 0.5) is 1/12. We need Var(kick) = 1 - damping^2.
-    // So (kick_amplitude^2)/12 = 1 - damping^2 => kick_amplitude = sqrt(12 * (1 - damping^2))
-    const thermalKick = Math.sqrt(12 * (1 - damping * damping)); // This is ~1.08
+    const thermalKick = Math.sqrt(12 * (1 - damping * damping)); // ~1.08
 
     for (const e of electrons) {
         e.vx += (Math.random() - 0.5) * thermalKick;
@@ -149,11 +148,10 @@ function updateElectrons() {
         e.vy *= damping;
         e.x += e.vx; e.y += e.vy;
 
-        // Periodic boundary conditions for horizontal movement
+        // Boundary conditions
         if (e.x > w) e.x = 0;
         if (e.x < 0) e.x = w;
 
-        // Reflective boundary conditions for vertical movement (confinement)
         if (e.y < conductorTop || e.y > conductorBottom) {
             e.vy *= -1;
             e.y = Math.max(conductorTop, Math.min(e.y, conductorBottom));
@@ -168,7 +166,7 @@ function collectVoltageSample() {
     if (electrons.length === 0) return;
     const sumOfVelocities = electrons.reduce((sum, e) => sum + e.vx, 0);
     
-    // This scaling is now correct because Var(vx) is calibrated to 1.
+    // This scaling is now correct because Var(vx) has been calibrated to 1.
     const scalingFactor = THEORETICAL_STD_DEV / Math.sqrt(numElectrons);
     
     const voltageSample = sumOfVelocities * scalingFactor;
@@ -207,7 +205,7 @@ resetBtn.addEventListener('click', () => {
     numElectrons = parseInt(electronsSlider.value);
     noiseVoltageSamples = [];
     createElectrons();
-    initializeHistogram(); // Re-initialize to clear data
+    initializeHistogram();
     updateObservations();
 });
 
@@ -222,16 +220,16 @@ electronsSlider.oninput = () => {
 // --------------------------------------
 function updateHistogramChart() {
     if (noiseVoltageSamples.length < 20) {
-        return; // Don't draw if not enough samples
+        return;
     }
 
-    const stableMin = -4 * THEORETICAL_STD_DEV, stableMax = 4 * THEORETICAL_STD_DEV;
+    const stableMin = -5 * THEORETICAL_STD_DEV, stableMax = 5 * THEORETICAL_STD_DEV;
     const numBins = 50;
     const binWidth = (stableMax - stableMin) / numBins;
     if (binWidth <= 0) return;
 
     const bins = new Array(numBins).fill(0);
-    const labels = bins.map((_, i) => (stableMin + (i + 0.5) * binWidth)); // Use bin center for PDF calc
+    const labels = bins.map((_, i) => (stableMin + (i + 0.5) * binWidth));
     
     noiseVoltageSamples.forEach(v => {
         const binIndex = Math.floor((v - stableMin) / binWidth);
@@ -242,7 +240,6 @@ function updateHistogramChart() {
     const densityData = bins.map(count => count / (totalSamples * binWidth));
     const theoreticalData = labels.map(label => gaussianPDF(label, 0, THEORETICAL_STD_DEV));
     
-    // Use bin edges for labels for better chart appearance
     histogramChart.data.labels = labels.map(l => l.toFixed(4));
     histogramChart.data.datasets[0].data = densityData;
     histogramChart.data.datasets[1].data = theoreticalData;
@@ -256,7 +253,7 @@ function updateObservations() {
         <div class="columns is-centered">
             <div class="column has-text-centered">
                 <h5 class="is-size-5 has-text-weight-semibold">Theoretical Values</h5>
-                <p>Mean (μ): 0.00 μV</p>
+                <p>Mean (μ): 0.00000 μV</p>
                 <p>Variance (σ²): ${THEORETICAL_VARIANCE.toFixed(5)} (μV)²</p>
             </div>
             <div class="column has-text-centered">
@@ -283,7 +280,5 @@ window.addEventListener("load", () => {
 
 window.addEventListener('resize', () => {
     resizeAndDrawConductor();
-    // Re-creating electrons on resize might be disruptive, consider just redrawing positions.
-    // For simplicity, we stick to the original logic.
     resetBtn.click(); 
 });
