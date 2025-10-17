@@ -77,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'constant',
             chartType: 'line',
             data: Array(plotLabels.length).fill(0.8), // IDEAL flat line, no noise
-            datasetOptions: { borderColor: initialBlue, borderWidth: 3 },
+            // FIXED: Added pointRadius: 0 to remove the dots on the line
+            datasetOptions: { borderColor: initialBlue, borderWidth: 3, pointRadius: 0 },
             yAxisLabel: 'Power'
         },
         {

@@ -85,8 +85,8 @@
             <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
                 <h4 class="v-datalist-subtitle">Electron Motion in a Conductor at T = 300K</h4>
                 <div id="animationContainer" style="position: relative; height: 200px; background-color: #f0f8ff;">
-                  <canvas id="conductorCanvas" style="position: absolute; top: 0; left: 0; z-index: 0;"></canvas>
-                  <!-- Electrons will be dynamically added here by JavaScript -->
+                  <!-- All drawing will now happen on this single canvas -->
+                  <canvas id="conductorCanvas"></canvas>
                 </div>
             </div>
             

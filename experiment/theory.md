@@ -1,129 +1,87 @@
-## Experiment 1: Thermal Noise and the Central Limit Theorem
+### The Theory of Additive White Gaussian Noise (AWGN)
 
-#### 1.1 Overview and Physical Origin
+Additive White Gaussian Noise (AWGN) is a fundamental model used in information theory, signal processing, and communications engineering to represent the influence of random, unavoidable noise on a signal. Each component of its name—Additive, White, and Gaussian—describes a core mathematical property of the noise.
 
-In any electrical conductor at a temperature above absolute zero (T > 0 K), the constituent electrons are in continuous, random motion due to their thermal energy. While the net movement of charge over time is zero in the absence of an external voltage source, at any given instant, the random velocities of billions of electrons result in a small, fluctuating net current. When this current flows through the conductor's intrinsic resistance (R), it produces a noise voltage, V(t). This phenomenon is known as Johnson-Nyquist noise or thermal noise.
+#### 1. Additive: The Noise Combines by Addition
 
-The key insight is that the macroscopic noise voltage measured at any instant is the superposition (sum) of the microscopic effects of a vast number (N) of individual electrons moving independently.
+The term "additive" implies that the noise, $N(t)$, is simply added to the original signal, $S(t)$, to produce the received signal, $Y(t)$.
 
-### 1.2 The Central Limit Theorem (CLT)
+$$
+Y(t) = S(t) + N(t)
+$$
 
-The Central Limit Theorem is a cornerstone of probability theory. It states that the sum of a large number of independent and identically distributed (i.i.d.) random variables will be approximately normally (Gaussian) distributed, regardless of the underlying distribution of the individual variables.
+This linear combination is the simplest way a signal can be corrupted. The model assumes that the noise is independent of the signal and is not influenced by it in any multiplicative or more complex way.
 
-In our case, the noise voltage can be expressed as a sum:
+#### 2. Gaussian: The Amplitude Follows a Normal Distribution
 
-```
-V_noise(t) ∝ Σ v_ix(t)   (i = 1 to N)
-```
+The "Gaussian" property describes the statistical distribution of the noise's amplitude in the time domain. At any given moment, the value of the noise voltage or current follows a Gaussian (or Normal) probability distribution.
 
-where v\_ix(t) is the horizontal velocity of the i-th electron at time t. Since N is extremely large (on the order of 10^23) and the motions are largely independent, the CLT predicts that the distribution of V\_noise(t) will be Gaussian.
+The Probability Density Function (PDF) for a Gaussian random variable with a mean ($\mu$) of zero and a variance of $\sigma^2$ is given by:
 
-### 1.3 The Gaussian Distribution and Johnson-Nyquist Noise
+$$
+f_N(n) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{n^2}{2\sigma^2}\right)
+$$
 
-Since the electron motion is random with no preferred direction, the mean of the noise voltage is zero:
+In this context:
 
-```
-E[V_noise(t)] = 0
-```
+* **Mean ($\mu = 0$)**: Since the noise is random, its amplitude is equally likely to be positive or negative, resulting in an average value of zero over time.
+* **Variance ($\sigma^2$)**: This represents the average power of the noise. A higher variance means greater noise power and a wider, flatter bell curve.
 
-The power of the noise, which corresponds to its variance (σ^2), is not zero. It is given by the Johnson-Nyquist formula:
+#### 3. White: Uniform Power in the Frequency Domain
 
-```
-σ^2 = 4 kB T R B
-```
+The term "white" is an analogy to white light, which contains all frequencies of the visible spectrum in equal proportion. For a signal, "white" noise means its power is uniformly distributed across the entire frequency spectrum. This crucial property is described by the **Power Spectral Density (PSD)**.
 
-Where:
+### Autocorrelation of AWGN
 
-* kB is the Boltzmann constant (1.38 × 10^-23 J/K)
-* T is the absolute temperature in Kelvin (K)
-* R is the resistance in Ohms (Ω)
-* B is the measurement bandwidth in Hertz (Hz)
+For white noise, the signal is completely uncorrelated with its value at any other instant.
 
-Therefore, thermal noise voltage V is a Gaussian random variable,
+* For any time lag $\tau \neq 0$, the correlation is zero.
+* For a time lag of $\tau = 0$, the correlation is perfect, and the value is the average power of the noise, $\sigma^2$.
 
-```
-V ∼ N(0, σ^2)
-```
+This is mathematically modeled using the **Dirac delta function**, $\delta(\tau)$, which is an infinitely sharp spike at zero and zero everywhere else.
 
-with a Probability Density Function (PDF) given by:
+$$
+R_N(\tau) = E[N(t)N(t+\tau)] = \frac{N_0}{2} \delta(\tau)
+$$
 
-```
-f_V(v) = (1 / sqrt(2πσ^2)) * exp(-v^2 / (2σ^2))
-```
+The **Wiener-Khinchin Theorem** establishes the link between the two domains: it states that the PSD is the Fourier Transform of the autocorrelation function. Taking the Fourier Transform of the delta function in the time domain results in a constant value in the frequency domain, perfectly describing the flat PSD of white noise.
 
-The simulation plots a histogram of the measured noise voltage and overlays this theoretical PDF, demonstrating the accuracy of the model.
+### Power Spectral Density (PSD) of White Noise
 
----
+The Power Spectral Density (PSD), denoted $S_N(f)$, describes how the power of a signal is distributed as a function of frequency. For ideal white noise, the PSD is a constant for all frequencies, from negative infinity to positive infinity.
 
-## Experiment 2: Autocorrelation and Power Spectral Density of AWGN
+The PSD is formally given by:
 
-### 2.1 Autocorrelation of White Noise
+$$
+S_N(f) = \frac{N_0}{2} \quad (\text{for all } f)
+$$
 
-The autocorrelation function, R\_X(τ), of a random process X(t) describes the correlation between the signal's values at two different points in time, separated by a lag τ. It is formally defined as:
+Here, $N_0$ is a fundamental constant representing the **power spectral density in Watts per Hertz (W/Hz)**. The factor of 2 in the denominator accounts for the two-sided nature of the frequency spectrum (both positive and negative frequencies).
 
-```
-R_X(τ) = E[X(t) X(t + τ)]
-```
+**Significance of a Constant PSD:**
 
-The term "white" in AWGN is an analogy to white light, which contains all frequencies in equal proportion. For a signal, "white" means that the signal's value at any time t is completely uncorrelated with its value at any other time t + τ (for τ ≠ 0).
+* **Uniform Power Distribution**: A flat PSD means that the noise contributes an equal amount of power at every frequency. This is why filtering is effective: by restricting the frequency range (the bandwidth), we can reduce the total amount of noise power affecting the signal.
+* **Infinite Power (Theoretical)**: An ideal white noise signal with a perfectly flat PSD over an infinite bandwidth would have infinite total power. In reality, all physical systems have a finite bandwidth, so the noise power is always finite.
 
-Therefore, for an ideal white noise process with a mean of zero:
+**Calculating Noise Power in a Bandwidth:**
+The total noise power, $P_N$, within a specific frequency bandwidth, $B$, can be calculated by integrating the PSD over that bandwidth. For a system with a bandwidth $B$, the noise power is:
 
-* If τ ≠ 0, the values are uncorrelated, so:
+$$
+P_N = \int_{-B/2}^{B/2} S_N(f) \, df = \int_{-B/2}^{B/2} \frac{N_0}{2} \, df = \frac{N_0}{2} \times B
+$$
 
-  ```
-  R_X(τ) = E[X(t)] E[X(t + τ)] = 0 * 0 = 0
-  ```
-* If τ = 0, the correlation is with the signal itself:
+For a passband system (using only positive frequencies), the power is often expressed as:
 
-  ```
-  R_X(0) = E[X(t) X(t)] = E[X(t)^2] = σ^2
-  ```
+$$
+P_N = N_0 \times B
+$$
 
-which is the average power or variance of the process.
+This simple, linear relationship shows that the total noise power in a system is directly proportional to its bandwidth.
 
-Combining these results, the autocorrelation function for white noise is a scaled Dirac delta function:
+### Where is AWGN Found?
 
-```
-R_X(τ) = σ^2 δ(τ)
-```
+AWGN is not just a theoretical convenience; it is an accurate model for many real-world sources of random noise, including:
 
-This means the function is an infinitely sharp spike at τ = 0 and zero everywhere else. The simulation will show a sharp peak at τ = 0, approximating this behavior.
-
-### 2.2 Power Spectral Density (PSD)
-
-The Power Spectral Density (PSD), S\_X(f), describes how the power of a signal is distributed over the frequency domain. It is fundamentally linked to the autocorrelation function by the Wiener-Khinchin Theorem, which states that the PSD is the Fourier Transform of the autocorrelation function:
-
-```
-S_X(f) = F{R_X(τ)} = ∫ from -∞ to ∞ [R_X(τ) * exp(-j 2π f τ) dτ]
-```
-
-Using the result from the previous section, we take the Fourier Transform of the autocorrelation impulse:
-
-```
-S_X(f) = F{σ^2 δ(τ)} = σ^2 ∫ from -∞ to ∞ [δ(τ) * exp(-j 2π f τ) dτ]
-```
-
-By the sifting property of the Dirac delta function, this integral evaluates to 1 at τ = 0, leaving:
-
-```
-S_X(f) = σ^2
-```
-
-This is a profound result: the PSD of white noise is a constant for all frequencies. This means the noise power is uniformly spread across the entire frequency spectrum, which is the mathematical definition of "white". In communications, this constant is often denoted as N0 / 2.
-
-### 2.3 Noise Power in a Bandwidth
-
-The total power of a signal can be found by integrating its PSD over all frequencies. To find the power within a specific frequency band from f1 to f2, we integrate over that range:
-
-```
-P_band = ∫ from f1 to f2 [S_X(f) df]
-```
-
-Since S\_X(f) = σ^2 is a constant for AWGN, the integral simplifies to:
-
-```
-P_band = σ^2 (f2 - f1)
-```
-
-The simulation demonstrates this by allowing you to select a frequency band and showing that the calculated power is directly proportional to the bandwidth you select.
+* **Thermal Noise (Johnson-Nyquist Noise)**: Arises from the thermal agitation of charge carriers (usually electrons) inside an electrical conductor at temperatures above absolute zero. This is a primary source of noise in electronic components like resistors, amplifiers, and sensors.
+* **Shot Noise**: Occurs due to the discrete nature of electric charge in electronic devices like diodes and transistors. The random arrival of electrons or holes at a junction creates a fluctuating current.
+* **Atmospheric and Deep Space Noise**: Electromagnetic waves radiated by the Earth's atmosphere, the sun, and other celestial objects (like black-body radiation) are often modeled as AWGN, especially in satellite and deep-space communication links.
