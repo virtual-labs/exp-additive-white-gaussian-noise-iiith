@@ -1,4 +1,3 @@
-
 ### Experiment 1: Thermal Noise and the Central Limit Theorem
 
 * **N**avigate to the "Sub Experiment - 1" tab.
@@ -8,14 +7,13 @@
 * Use the "Stop" and "Reset" buttons to control the simulation.
 * Adjust the "Number of Electrons (N)" slider and click "Reset" to see its effect.
 
-### Experiment 2: ACF and PSD of White Noise
+### Experiment 2: Noise is White
 
 * Navigate to the "Sub Experiment - 2" tab.
-* In the "Autocorrelation Function (ACF)" section, click on the plot you think is correct.
-* Click the "Check ACF" button.
-* In the "Power Spectral Density (PSD)" section, click on the plot you think is correct.
-* Click the "Check PSD" button.
-* Read the feedback provided in the observation panels.
+* Select the filter strength.
+* Observe the scatter plot (also the contours of Gaussian Distribution plotted).
+* If they lie exactly horizontally, they are uncorrelated and hence white.
+* Also observe the noise signal varriations with the filter strength.
 
 ### Experiment 3: BPSK Transmission with AWGN
 
