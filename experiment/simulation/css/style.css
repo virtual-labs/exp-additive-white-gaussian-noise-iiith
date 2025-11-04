@@ -401,3 +401,47 @@ canvas { /* Universal canvas styling */
     font-weight: 600;
     color: #495057;
     margin-bottom: 0.5rem;
+}
+
+/* --- UNIFIED STYLESHEET (style.css) --- */
+
+/* ... (all previous styles remain the same) ... */
+
+/* ----------------------------------------
+   STYLES FOR ACF/PSD EXPERIMENT
+   ---------------------------------------- */
+/* ... (other styles in this section) ... */
+
+.status-box {
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+    margin-top: 1rem;
+    border: 2px solid;
+    transition: all 0.3s ease-in-out;
+}
+.status-box span {
+    display: block;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+.status-box .rho-display {
+    font-size: 0.9rem;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin-top: 0.25rem;
+    font-family: monospace;
+}
+.status-box.uncorrelated {
+    border-color: #3273dc;
+    background-color: #f2f6fc;
+    color: #3273dc;
+}
+.status-box.correlated {
+    border-color: #ff3860;
+    background-color: #fff5f7;
+    color: #ff3860;
+}
+
+/* ... (all following styles remain the same) ... */

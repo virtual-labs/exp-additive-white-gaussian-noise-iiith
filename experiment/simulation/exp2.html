@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
   <link rel="stylesheet" href="./css/style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <!-- SCRIPT FOR MATH RENDERING - THIS LINE WAS ADDED -->
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <title>Noise Correlation & Gaussian Contours</title>
 </head>
 <body>
@@ -24,24 +26,26 @@
         </div>
 
         <div class="subheading-box">
-          <p class="title">Visualizing Noise Correlation with Gaussian Contours</p>
+          <p class="title">From Independence to Correlation: A 2D Gaussian Visualization</p>
         </div>
 
         <div class="v-collapsible-instruction-container v-instruction-container">
           <div class="v-collapsible is-size-4">Instructions</div>
           <div class="v-content">
-            <p>This experiment reveals the fundamental statistical difference between white and colored noise by visualizing their joint probability distributions.</p>
-            <h4 style="font-weight: 600; font-size: 1.15em;">Key Concepts</h4>
+            <p>This experiment visualizes the effect of correlation on the joint probability distribution of a noise signal.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">The 2D Joint Distribution</h4>
             <ul style="list-style: disc">
-              <li><strong>White Noise:</strong> Any two samples are statistically independent. Plotting the noise at time `t` vs. `t-τ` results in a <strong>circularly symmetric</strong> probability distribution.</li>
-              <li><strong>Colored Noise:</strong> Samples are correlated. This correlation skews the joint distribution into a <strong>tilted ellipse</strong>.</li>
+              <li>The main plot shows the <strong>2D joint probability distribution</strong> of the noise signal at the current time, \(X(t)\), versus the signal at a delayed time, \(X(t-\tau)\).</li>
+              <li><strong>Uncorrelated Noise (White):</strong> When any two samples are statistically independent, their joint distribution is <strong>circularly symmetric</strong>. The probability of a certain value for \(X(t)\) does not depend on the value of \(X(t-\tau)\).</li>
+              <li><strong>Correlated Noise (Colored):</strong> When samples are correlated, the distribution becomes a <strong>tilted ellipse</strong>. This shows that the value of \(X(t)\) is statistically dependent on \(X(t-\tau)\). For example, a high value at \(t-\tau\) makes a high value at \(t\) more likely.</li>
             </ul>
+            <h4 style="font-weight: 600; font-size: 1.15em;">Generalization to N-Dimensions</h4>
+            <p>While we can only visualize two variables at a time, this concept extends to any number of dimensions. The relationship between \(n\) random variables is fully described by an \(n \times n\) <strong>covariance matrix</strong>. The circular (independent) and elliptical (correlated) contours you see here are simply the 2D representations of that matrix.</p>
             <h4 style="font-weight: 600; font-size: 1.15em;">How to Interact</h4>
             <ul style="list-style: disc;">
-                <li>The <strong>main chart</strong> shows a live scatter plot of noise samples `X(t)` vs. `X(t-τ)`, with the theoretical Gaussian contours overlaid.</li>
-                <li>The <strong>side chart</strong> shows the noise waveform in the time domain for context.</li>
-                <li>Use the <strong>"Noise 'Color' (Filter Strength)"</strong> slider to apply a low-pass filter to the white noise.</li>
-                <li>Observe how the contours change from <strong>perfect circles (uncorrelated)</strong> for white noise to <strong>tilted ellipses (correlated)</strong> as you increase the filter strength.</li>
+                <li>Use the <strong>"Correlation Strength"</strong> slider to apply a filter that introduces correlation between time samples.</li>
+                <li>Observe how the contours change from <strong>perfect circles (\(\rho = 0\))</strong> for uncorrelated noise to <strong>tilted ellipses (\(\rho > 0\))</strong> as you increase the correlation.</li>
+                <li>The <strong>Status Box</strong> provides the theoretical correlation coefficient, \(\rho\), for the current filter setting.</li>
             </ul>
           </div>
         </div>
@@ -60,10 +64,11 @@
                 <!-- Controls and Side Plot -->
                 <div class="side-panel">
                     <div class="control-panel">
-                        <label for="filterSlider" class="label">Noise "Color" (Filter Strength)</label>
+                        <label for="filterSlider" class="label">Correlation Strength (via Filtering)</label>
                         <input id="filterSlider" class="slider" type="range" min="0" max="95" value="0" step="1">
-                        <div id="status-box" class="status-box white">
-                            <span>WHITE NOISE (Uncorrelated)</span>
+                        <div id="status-box" class="status-box uncorrelated">
+                            <span>UNCORRELATED</span>
+                            <div class="rho-display" id="rhoDisplay">Theoretical ρ = 0.0000</div>
                         </div>
                     </div>
                     <div class="side-plot">
