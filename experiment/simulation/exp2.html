@@ -10,6 +10,38 @@
   <!-- SCRIPT FOR MATH RENDERING - THIS LINE WAS ADDED -->
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <title>Noise Correlation & Gaussian Contours</title>
+  <style>
+    /* Added styles for covariance matrix and square plot */
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem; /* Space between control elements */
+    }
+    .cov-matrix-container {
+        padding: 10px;
+        border: 1px solid #dbdbdb;
+        border-radius: 6px;
+        text-align: center;
+        background-color: #f9f9f9;
+    }
+    .cov-matrix-container span {
+        font-weight: 600;
+        font-size: 0.9em;
+        color: #363636;
+    }
+    .matrix {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.1em;
+        margin-top: 5px;
+        line-height: 1.5;
+    }
+    .main-plot .chart-wrapper {
+      position: relative;
+      /* Removed fixed height to allow aspect ratio to work */
+      max-width: 500px; /* Example max width */
+      margin: auto;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -35,17 +67,17 @@
             <p>This experiment visualizes the effect of correlation on the joint probability distribution of a noise signal.</p>
             <h4 style="font-weight: 600; font-size: 1.15em;">The 2D Joint Distribution</h4>
             <ul style="list-style: disc">
-              <li>The main plot shows the <strong>2D joint probability distribution</strong> of the noise signal at the current time, \(X(t)\), versus the signal at a delayed time, \(X(t-\tau)\).</li>
-              <li><strong>Uncorrelated Noise (White):</strong> When any two samples are statistically independent, their joint distribution is <strong>circularly symmetric</strong>. The probability of a certain value for \(X(t)\) does not depend on the value of \(X(t-\tau)\).</li>
-              <li><strong>Correlated Noise (Colored):</strong> When samples are correlated, the distribution becomes a <strong>tilted ellipse</strong>. This shows that the value of \(X(t)\) is statistically dependent on \(X(t-\tau)\). For example, a high value at \(t-\tau\) makes a high value at \(t\) more likely.</li>
+              <li>The main plot shows the <strong>2D joint probability distribution</strong> of two random variables, \(X_1\) and \(X_2\).</li>
+              <li><strong>Uncorrelated (\(\rho \approx 0\)):</strong> When two variables are statistically independent, their joint distribution is <strong>circularly symmetric</strong>. The value of \(X_1\) does not depend on the value of \(X_2\).</li>
+              <li><strong>Positively Correlated (\(\rho > 0\)):</strong> The distribution becomes an <strong>ellipse tilted to the right</strong>. This shows that a high value for \(X_1\) makes a high value for \(X_2\) more likely.</li>
+              <li><strong>Negatively Correlated (\(\rho < 0\)):</strong> The distribution is an <strong>ellipse tilted to the left</strong>. This shows that a high value for \(X_1\) makes a low value for \(X_2\) more likely (and vice versa).</li>
             </ul>
-            <h4 style="font-weight: 600; font-size: 1.15em;">Generalization to N-Dimensions</h4>
-            <p>While we can only visualize two variables at a time, this concept extends to any number of dimensions. The relationship between \(n\) random variables is fully described by an \(n \times n\) <strong>covariance matrix</strong>. The circular (independent) and elliptical (correlated) contours you see here are simply the 2D representations of that matrix.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">The Covariance Matrix</h4>
+            <p>The relationship between \(n\) random variables is described by an \(n \times n\) <strong>covariance matrix</strong>. The circular and elliptical contours you see are 2D representations of this matrix, which is displayed in the control panel.</p>
             <h4 style="font-weight: 600; font-size: 1.15em;">How to Interact</h4>
             <ul style="list-style: disc;">
-                <li>Use the <strong>"Correlation Strength"</strong> slider to apply a filter that introduces correlation between time samples.</li>
-                <li>Observe how the contours change from <strong>perfect circles (\(\rho = 0\))</strong> for uncorrelated noise to <strong>tilted ellipses (\(\rho > 0\))</strong> as you increase the correlation.</li>
-                <li>The <strong>Status Box</strong> provides the theoretical correlation coefficient, \(\rho\), for the current filter setting.</li>
+                <li>Use the <strong>"Correlation Strength"</strong> slider to change the correlation coefficient \(\rho\) from -0.95 to +0.95.</li>
+                <li>Observe how the contours change from circles to ellipses and how the tilt of the ellipses changes based on the sign of \(\rho\).</li>
             </ul>
           </div>
         </div>
@@ -59,20 +91,28 @@
               <div class="analyzer-container">
                 <!-- Main Scatter Plot -->
                 <div class="main-plot">
-                    <div class="chart-wrapper" style="height: 450px;"><canvas id="scatterPlot"></canvas></div>
+                    <div class="chart-wrapper"><canvas id="scatterPlot"></canvas></div>
                 </div>
                 <!-- Controls and Side Plot -->
                 <div class="side-panel">
                     <div class="control-panel">
-                        <label for="filterSlider" class="label">Correlation Strength (via Filtering)</label>
-                        <input id="filterSlider" class="slider" type="range" min="0" max="95" value="0" step="1">
+                        <label for="filterSlider" class="label">Correlation Strength (ρ)</label>
+                        <input id="filterSlider" class="slider" type="range" min="-95" max="95" value="0" step="1">
                         <div id="status-box" class="status-box uncorrelated">
                             <span>UNCORRELATED</span>
-                            <div class="rho-display" id="rhoDisplay">Theoretical ρ = 0.0000</div>
+                            <div class="rho-display" id="rhoDisplay">Correlation ρ = 0.000</div>
                         </div>
+                        <!-- COVARIANCE MATRIX DISPLAY -->
+                        <div class="cov-matrix-container">
+                          <span>Covariance Matrix (Σ):</span>
+                          <div id="covMatrixDisplay" class="matrix">
+                              <div class="matrix-row">[ <span id="cov_11">1.00</span>, <span id="cov_12">0.00</span> ]</div>
+                              <div class="matrix-row">[ <span id="cov_21">0.00</span>, <span id="cov_22">1.00</span> ]</div>
+                          </div>
+                      </div>
                     </div>
                     <div class="side-plot">
-                         <h4 class="chart-title">Time-Domain Signal</h4>
+                         <h4 class="chart-title">Correlated Time-Domain Signal</h4>
                         <div class="chart-wrapper" style="height: 180px;"><canvas id="timeSeriesChart"></canvas></div>
                     </div>
                 </div>
