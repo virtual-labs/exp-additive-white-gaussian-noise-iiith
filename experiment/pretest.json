@@ -84,7 +84,7 @@
         "d": "Incorrect. Sampling rate affects aliasing, not PSD shape inherently."
       },
       "correctAnswer": "c",
-      "difficulty": "hard"
+      "difficulty": "advanced"
     },
     {
       "question": "In a communication system, how does AWGN affect the performance at high SNR levels?",
@@ -101,7 +101,7 @@
         "d": "Incorrect. Filtering reduces bandwidth, but cannot eliminate noise fully."
       },
       "correctAnswer": "c",
-      "difficulty": "hard"
+      "difficulty": "advanced"
     }
   ]
 }

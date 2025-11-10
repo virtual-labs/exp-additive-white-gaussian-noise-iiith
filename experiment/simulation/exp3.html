@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
     <link rel="stylesheet" href="./css/css3.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- MathJax for rendering math symbols -->
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <title>AWGN Channel Simulation</title>
+    <title>BPSK Bitstream Simulation</title>
 </head>
 <body>
 <div class="container">
@@ -21,70 +19,102 @@
             <li class="active"><a href="exp3.html">Sub Experiment - 3</a></li>
         </ul>
     </div>
+    <!-- MODIFIED: Title box placement -->
     <div class="subheading-box">
-        <p class="title">Visualizing the AWGN Communication Channel</p>
+        <p class="title">Visualizing BPSK Transmission with AWGN</p>
     </div>
+
+    <!-- MODIFIED: Instructions Panel - restored and updated -->
+    <div class="v-collapsible-instruction-container v-instruction-container">
+    <div class="v-collapsible is-size-4">Instructions</div>
+    <div class="v-content">
+        <p>This experiment illustrates how Additive White Gaussian Noise (AWGN) affects signal transmission and reception.</p>
+        
+        <h4 style="font-weight: 600; font-size: 1.15em;">Objective</h4>
+        <ul style="list-style: disc">
+            <li>To demonstrate the impact of noise (AWGN) on communication signals.</li>
+        </ul>
+        
+        <h4 style="font-weight: 600; font-size: 1.15em;">Key Concepts</h4>
+        <ul style="list-style: disc;">
+            <li><strong>Additive White Gaussian Noise (AWGN):</strong>
+                <ul>
+                    <li><strong>Additive:</strong> The noise is added directly to the original transmitted signal.</li>
+                    <li><strong>Noise and errors:</strong> Noise can cause bit errors when it pushes the received signal across the decision boundary.</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <h4 style="font-weight: 600; font-size: 1.15em;">How to Interact</h4>
+        <ul style="list-style: disc;">
+            <li>Enter a binary message (a sequence of '0's and '1's).</li>
+            <li>Select a noise power level to control the signal-to-noise ratio (SNR).</li>
+            <li>Observe the plots and the received signal to see how noise distorts the transmission.</li>
+        </ul>
+    </div>
+</div>
+<br />
+
 
     <section id="main-experiment">
         <div class="v-datalist-container components-list">
-            <h3 class="v-datalist-title">AWGN Channel Simulator</h3>
+            <h3 class="v-datalist-title">BPSK Bitstream Simulator</h3>
 
             <!-- Controls Panel -->
             <div class="white-boxed-panel control-panel-grid">
-                <div class="control-item">
-                    <label for="text-input" class="label">1. Message to Transmit:</label>
-                    <textarea id="text-input" class="textarea" rows="1">Test</textarea>
-                </div>
-                <div class="control-item">
-                    <label for="modulation-select" class="label">2. Modulation Scheme:</label>
-                    <div class="select is-primary is-fullwidth">
-                        <select id="modulation-select">
-                            <option value="qpsk">QPSK (2 bits/symbol)</option>
-                            <option value="16qam">16-QAM (4 bits/symbol)</option>
-                        </select>
-                    </div>
+                <div class="control-item-full-width">
+                    <label for="bit-input" class="label">1. Transmit Bitstream (0s and 1s only):</label>
+                    <input type="text" id="bit-input" class="input" value="1011001011100010">
                 </div>
                 <div class="control-item-full-width">
-                    <!-- CORRECTED: Using MathJax syntax -->
-                    <label for="noise-slider" class="label">3. Channel Noise Variance \(\sigma^2\): <span id="noise-value" class="slider-value">0.05</span></label>
-                    <input id="noise-slider" type="range" min="0" max="0.5" value="0.05" step="0.005">
+                    <label for="noise-slider" class="label">2. Channel Noise Power (σ²): <span id="noise-value" class="slider-value">0.10</span></label>
+                    <input id="noise-slider" type="range" min="0" max="1.5" value="0.1" step="0.01">
                 </div>
             </div>
 
             <!-- Information Panel -->
             <div class="white-boxed-panel info-panel">
                 <div>
-                    <h4 class="v-datalist-subtitle info-title">Encoded Bitstream</h4>
-                    <p id="encoded-bits"></p>
+                    <h4 class="v-datalist-subtitle info-title">Transmitted Bitstream</h4>
+                    <p id="transmitted-bits"></p>
                 </div>
                 <div>
-                    <h4 class="v-datalist-subtitle info-title">Decoded Message</h4>
-                    <p id="decoded-message"></p>
+                    <h4 class="v-datalist-subtitle info-title">Decoded Bitstream</h4>
+                    <p id="decoded-bits"></p>
                 </div>
             </div>
 
             <!-- Plotting Grid -->
             <div class="plots-container">
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">A: Clean Signal Waveform</h4>
+                    <h4 class="v-datalist-subtitle">A: Transmitted Signal</h4>
                     <canvas id="cleanSignalChart"></canvas>
                 </div>
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">B: Additive Noise Waveform</h4>
+                    <h4 class="v-datalist-subtitle">B: Channel Noise</h4>
                     <canvas id="noiseSignalChart"></canvas>
                 </div>
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">C: Received Noisy Signal (A + B)</h4>
+                    <h4 class="v-datalist-subtitle">C: Received Signal (A + B)</h4>
                     <canvas id="noisySignalChart"></canvas>
                 </div>
                 <div class="white-boxed-panel plot-wrapper">
-                    <h4 class="v-datalist-subtitle">D: Received Constellation</h4>
+                    <h4 class="v-datalist-subtitle">D: 1D Constellation & Decision</h4>
                     <canvas id="constellationChart"></canvas>
                 </div>
             </div>
+
+            <!-- MODIFIED: Observations Panel moved to the bottom -->
+            <div id="observations-panel" class="white-boxed-panel">
+                <h4 class="v-datalist-subtitle" style="margin-bottom: 0.5rem;">Observations</h4>
+                <div id="observations"></div>
+            </div>
+
         </div>
     </section>
 </div>
+
+<script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
 <script src="./js/script3.js"></script>
 </body>
 </html>

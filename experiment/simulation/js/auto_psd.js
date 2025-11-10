@@ -1,171 +1,142 @@
-// --------------------------------------
-// 1. References & Global Variables
-// --------------------------------------
-const autocorrelationChartCtx = document.getElementById("autocorrelationChart").getContext("2d");
-const psdChartCtx = document.getElementById("psdChart").getContext("2d");
+document.addEventListener('DOMContentLoaded', () => {
+    const filterSlider = document.getElementById('filterSlider');
+    const statusBox = document.getElementById('status-box');
+    const rhoDisplay = document.getElementById('rhoDisplay');
+    // Covariance Matrix UI Elements
+    const cov11 = document.getElementById('cov_11');
+    const cov12 = document.getElementById('cov_12');
+    const cov21 = document.getElementById('cov_21');
+    const cov22 = document.getElementById('cov_22');
+    
+    const scatterCtx = document.getElementById('scatterPlot').getContext('2d');
+    const timeCtx = document.getElementById('timeSeriesChart').getContext('2d');
 
-let autocorrelationChart, psdChart;
-let noiseSignal = [];
-let psdData = [];
+    let scatterChart, timeChart;
+    let animationFrameId;
 
-// Controls
-let noisePower = 1.0;
-const SIGNAL_LENGTH = 1024; // Must be a power of 2 for FFT
+    const NUM_SCATTER_POINTS = 200;
+    const NUM_TIME_POINTS = 256;
 
-// DOM Elements
-const noisePowerSlider = document.getElementById("noisePower"), noisePowerVal = document.getElementById("noisePowerVal");
-const generateBtn = document.getElementById("generateBtn");
-const startFreqSlider = document.getElementById("startFreq"), endFreqSlider = document.getElementById("endFreq");
-const startFreqVal = document.getElementById("startFreqVal"), endFreqVal = document.getElementById("endFreqVal");
-const observationsDiv = document.getElementById("observations");
+    // --- Data Buffers ---
+    let timeSeriesBuffer = [];
+    let scatterPoints = [];
 
-// --------------------------------------
-// 2. Utility & DSP Functions
-// --------------------------------------
-function generateGaussianNoise(length, stdDev) {
-    const noise = new Array(length);
-    for (let i = 0; i < length; i++) {
-        // Box-Muller transform to get a true Gaussian distribution
-        let u = 0, v = 0;
-        while(u === 0) u = Math.random();
-        while(v === 0) v = Math.random();
-        let z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-        noise[i] = z * stdDev;
-    }
-    return noise;
-}
+    // --- Chart Initialization ---
+    const initializeCharts = () => {
+        scatterChart = new Chart(scatterCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    { type: 'line', data: [], fill: true, borderColor: 'rgba(54, 162, 235, 0.5)', backgroundColor: 'rgba(54, 162, 235, 0.1)', borderWidth: 2, pointRadius: 0, tension: 0.1, order: 2 },
+                    { type: 'line', data: [], fill: false, borderColor: 'rgba(54, 162, 235, 0.5)', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.1, order: 3 },
+                    { type: 'scatter', data: [], backgroundColor: 'rgba(54, 162, 235, 0.7)', order: 1 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, 
+                aspectRatio: 1, // Force a 1:1 aspect ratio (square plot)
+                plugins: { 
+                    legend: { display: false }, 
+                    title: { display: true, text: '2D Joint Distribution: X₁ vs X₂' } 
+                },
+                scales: {
+                    x: { min: -3.5, max: 3.5, title: { display: true, text: 'X₁' } },
+                    y: { min: -3.5, max: 3.5, title: { display: true, text: 'X₂' } }
+                }
+            }
+        });
 
-function calculateAutocorrelation(signal) {
-    const N = signal.length;
-    const acf = new Array(N).fill(0);
-    for (let tau = 0; tau < N; tau++) {
-        let sum = 0;
-        for (let i = 0; i < N - tau; i++) {
-            sum += signal[i] * signal[i + tau];
+        timeChart = new Chart(timeCtx, {
+            type: 'line',
+            data: { labels: Array(NUM_TIME_POINTS).fill(0), datasets: [{ data: [], borderColor: '#36a2eb', borderWidth: 1.5, pointRadius: 0, tension: 0.2 }] },
+            options: {
+                responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                scales: { x: { display: false }, y: { min: -3.5, max: 3.5 } }
+            }
+        });
+    };
+
+    // --- Core Logic ---
+    const generateNoisePoint = () => { // Standard Normal distribution (Box-Muller transform)
+        const u1 = Math.random(); const u2 = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    };
+
+    const getEllipsePoints = (covariance, variance) => { // Generates points for the covariance ellipse
+        const angle = covariance === 0 ? 0 : Math.atan2(2 * covariance, variance.x - variance.y) / 2;
+        const cos = Math.cos(angle); const sin = Math.sin(angle);
+        const term1 = (variance.x + variance.y) / 2;
+        const term2 = Math.sqrt(Math.pow(variance.x - variance.y, 2) / 4 + Math.pow(covariance, 2));
+        const lambda1 = term1 + term2; const lambda2 = term1 - term2;
+        const a = Math.sqrt(lambda1); const b = Math.sqrt(lambda2);
+        const points = [];
+        for (let i = 0; i <= 360; i += 10) {
+            const rad = i * (Math.PI / 180);
+            const x0 = a * Math.cos(rad); const y0 = b * Math.sin(rad);
+            points.push({ x: x0 * cos - y0 * sin, y: x0 * sin + y0 * cos });
         }
-        acf[tau] = sum / (N - tau);
-    }
-    return acf;
-}
+        return points;
+    };
 
-// Basic FFT implementation (Cooley-Tukey)
-function fft(signal) {
-    const N = signal.length;
-    if (N <= 1) return [{re: signal[0], im: 0}];
+    // --- Animation Loop ---
+    const animate = () => {
+        const rho = parseInt(filterSlider.value, 10) / 100;
 
-    const even = fft(signal.filter((_, i) => i % 2 === 0));
-    const odd = fft(signal.filter((_, i) => i % 2 !== 0));
-
-    const result = new Array(N);
-    for (let k = 0; k < N / 2; k++) {
-        const t = odd[k];
-        const angle = -2 * Math.PI * k / N;
-        const c = { re: Math.cos(angle), im: Math.sin(angle) };
-        const product = { re: t.re * c.re - t.im * c.im, im: t.re * c.im + t.im * c.re };
+        // --- 1. Generate new point for the SCATTER PLOT ---
+        // Generates an independent (x1, x2) pair according to the covariance matrix
+        const z1 = generateNoisePoint();
+        const z2 = generateNoisePoint();
+        const x1 = z1;
+        const x2 = rho * z1 + Math.sqrt(1 - rho**2) * z2;
         
-        result[k] = { re: even[k].re + product.re, im: even[k].im + product.im };
-        result[k + N / 2] = { re: even[k].re - product.re, im: even[k].im - product.im };
-    }
-    return result;
-}
+        scatterPoints.push({ x: x1, y: x2 });
+        if (scatterPoints.length > NUM_SCATTER_POINTS) scatterPoints.shift();
+        
+        // --- 2. Generate new point for the TIME SERIES PLOT (FIXED) ---
+        // This AR(1) process creates a signal that is visually dynamic and smooth
+        const whiteNoise = generateNoisePoint();
+        const lastValue = timeSeriesBuffer.length > 0 ? timeSeriesBuffer[timeSeriesBuffer.length - 1] : 0;
+        // Generate the new point using the previous value, ensuring the process has unit variance
+        const newValue = rho * lastValue + Math.sqrt(1 - rho**2) * whiteNoise;
 
-// --------------------------------------
-// 3. Chart Initialization
-// --------------------------------------
-function initializeCharts() {
-    if (autocorrelationChart) autocorrelationChart.destroy();
-    autocorrelationChart = new Chart(autocorrelationChartCtx, {
-        type: 'line',
-        data: { labels: [], datasets: [{ label: 'Sample Autocorrelation', data: [], borderColor: 'rgba(220, 20, 60, 0.8)', borderWidth: 2 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Time Lag (τ)' }}, y: { title: { display: true, text: 'Correlation' }}}}
-    });
+        timeSeriesBuffer.push(newValue);
+        if (timeSeriesBuffer.length > NUM_TIME_POINTS) timeSeriesBuffer.shift();
+        
+        // --- 3. Define variance/covariance for drawing ellipses ---
+        const variance = { x: 1, y: 1 };
+        const covariance = rho;
+        const contour1 = getEllipsePoints(covariance, variance).map(p => ({ x: p.x * 1, y: p.y * 1 }));
+        const contour2 = getEllipsePoints(covariance, variance).map(p => ({ x: p.x * 2, y: p.y * 2 }));
+        
+        // --- 4. Update UI ---
+        if (Math.abs(rho) < 0.1) {
+            statusBox.className = 'status-box uncorrelated';
+            statusBox.firstElementChild.textContent = 'UNCORRELATED (Independent)';
+        } else {
+            statusBox.className = 'status-box correlated';
+            statusBox.firstElementChild.textContent = 'CORRELATED (Dependent)';
+        }
+        rhoDisplay.textContent = `Correlation ρ = ${rho.toFixed(3)}`;
 
-    if (psdChart) psdChart.destroy();
-    psdChart = new Chart(psdChartCtx, {
-        type: 'line',
-        data: { labels: [], datasets: [{ label: 'Power Spectral Density', data: [], borderColor: 'rgba(30, 144, 255, 0.8)', stepp: true }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Frequency (Hz)' }}, y: { title: { display: true, text: 'Power' }}}}
-    });
-}
+        // Update Covariance Matrix display
+        cov11.textContent = (1.0).toFixed(2);
+        cov22.textContent = (1.0).toFixed(2);
+        cov12.textContent = rho.toFixed(2);
+        cov21.textContent = rho.toFixed(2);
+        
+        // --- 5. Update Charts ---
+        scatterChart.data.datasets[0].data = contour2;
+        scatterChart.data.datasets[1].data = contour1;
+        scatterChart.data.datasets[2].data = scatterPoints;
+        timeChart.data.datasets[0].data = timeSeriesBuffer;
 
-// --------------------------------------
-// 4. Main Simulation & Update Logic
-// --------------------------------------
-function runFullAnalysis() {
-    // 1. Generate Signal
-    const stdDev = Math.sqrt(noisePower);
-    noiseSignal = generateGaussianNoise(SIGNAL_LENGTH, stdDev);
+        scatterChart.update('none');
+        timeChart.update('none');
+        
+        animationFrameId = requestAnimationFrame(animate);
+    };
 
-    // 2. Calculate Autocorrelation
-    const acf = calculateAutocorrelation(noiseSignal);
-    
-    // 3. Calculate PSD
-    const fftResult = fft(noiseSignal);
-    psdData = fftResult.slice(0, SIGNAL_LENGTH / 2).map(c => (c.re * c.re + c.im * c.im) / SIGNAL_LENGTH);
-
-    // 4. Update all visuals
-    updateAutocorrelationChart(acf);
-    updatePsdChart();
-    updateObservations();
-}
-
-// --------------------------------------
-// 5. Update & Drawing Functions
-// --------------------------------------
-function updateAutocorrelationChart(acf) {
-    const maxLag = 50; // Show only a small portion of lags
-    const labels = Array.from({length: maxLag}, (_, i) => i);
-    autocorrelationChart.data.labels = labels;
-    autocorrelationChart.data.datasets[0].data = acf.slice(0, maxLag);
-    autocorrelationChart.update();
-}
-
-function updatePsdChart() {
-    const labels = Array.from({length: psdData.length}, (_, i) => i);
-    psdChart.data.labels = labels;
-    psdChart.data.datasets[0].data = psdData;
-
-    // Add visual for frequency band selection
-    const startFreq = parseInt(startFreqSlider.value);
-    const endFreq = parseInt(endFreqSlider.value);
-    const backgroundColors = labels.map(i => (i >= startFreq && i <= endFreq) ? 'rgba(30, 144, 255, 0.3)' : 'transparent');
-    psdChart.data.datasets[0].backgroundColor = backgroundColors;
-    psdChart.data.datasets[0].fill = 'start';
-    psdChart.update();
-}
-
-function updateObservations() {
-    // Total Power (Parseval's Theorem check)
-    const totalPower = psdData.reduce((a, b) => a + b, 0);
-
-    // Power in selected band
-    const startFreq = parseInt(startFreqSlider.value);
-    const endFreq = parseInt(endFreqSlider.value);
-    const bandPower = psdData.slice(startFreq, endFreq + 1).reduce((a, b) => a + b, 0);
-    
-    observationsDiv.innerHTML = `
-        <p><strong>Total Signal Power (from PSD):</strong> ${totalPower.toFixed(4)}</p>
-        <p><strong>Selected Bandwidth:</strong> ${endFreq - startFreq} Hz</p>
-        <p><strong>Power in Selected Band:</strong> ${bandPower.toFixed(4)}</p>`;
-}
-
-// --------------------------------------
-// 6. Event Handlers
-// --------------------------------------
-generateBtn.addEventListener('click', runFullAnalysis);
-noisePowerSlider.oninput = () => { noisePower = parseFloat(noisePowerSlider.value); noisePowerVal.textContent = noisePower.toFixed(1); };
-startFreqSlider.oninput = () => { startFreqVal.textContent = startFreqSlider.value; if (parseInt(endFreqSlider.value) <= parseInt(startFreqSlider.value)) { endFreqSlider.value = parseInt(startFreqSlider.value) + 1; endFreqVal.textContent = endFreqSlider.value;} updatePsdChart(); updateObservations(); };
-endFreqSlider.oninput = () => { endFreqVal.textContent = endFreqSlider.value; if (parseInt(endFreqSlider.value) <= parseInt(startFreqSlider.value)) { startFreqSlider.value = parseInt(endFreqSlider.value) - 1; startFreqVal.textContent = startFreqSlider.value;} updatePsdChart(); updateObservations(); };
-
-
-// --------------------------------------
-// 7. Initial Load
-// --------------------------------------
-window.addEventListener("load", () => {
-    noisePowerVal.textContent = parseFloat(noisePowerSlider.value).toFixed(1);
-    startFreqVal.textContent = startFreqSlider.value;
-    endFreqVal.textContent = endFreqSlider.value;
-    
     initializeCharts();
-    runFullAnalysis();
+    animate();
 });

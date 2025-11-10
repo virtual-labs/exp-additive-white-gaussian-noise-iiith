@@ -5,126 +5,124 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
-  <link rel="stylesheet" href="./css/css1.css" />
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <link rel="stylesheet" href="./css/style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-  <title>AWGN - Autocorrelation & PSD</title>
+  <!-- SCRIPT FOR MATH RENDERING - THIS LINE WAS ADDED -->
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <title>Noise Correlation & Gaussian Contours</title>
+  <style>
+    /* Added styles for covariance matrix and square plot */
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem; /* Space between control elements */
+    }
+    .cov-matrix-container {
+        padding: 10px;
+        border: 1px solid #dbdbdb;
+        border-radius: 6px;
+        text-align: center;
+        background-color: #f9f9f9;
+    }
+    .cov-matrix-container span {
+        font-weight: 600;
+        font-size: 0.9em;
+        color: #363636;
+    }
+    .matrix {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.1em;
+        margin-top: 5px;
+        line-height: 1.5;
+    }
+    .main-plot .chart-wrapper {
+      position: relative;
+      /* Removed fixed height to allow aspect ratio to work */
+      max-width: 500px; /* Example max width */
+      margin: auto;
+    }
+  </style>
 </head>
-
 <body>
   <div class="container">
-    <div class="tasks-heading">AWGN</div>
-
-    <div class="v-tabs">
-      <ul>
-        <li><a href="exp1.html">Experiment 1: Thermal Noise is Gaussian</a></li>
-        <li class="active"><a href="exp2.html">Experiment 2: Autocorrelation & PSD</a></li>
-        <li><a href="exp3.html">Experiment 3: Additive Nature of Noise</a></li>
-      </ul>
-    </div>
-
-    <div class="subheading-box">
-      <p class="title">Experiment 2: Autocorrelation and Power Spectral Density of AWGN</p>
-    </div>
-
+    <div class="tasks-heading">Tasks</div>
     <div class="columns is-centered">
       <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        
+        <div class="v-tabs">
+          <ul>
+            <li><a href="exp1.html">Sub Experiment - 1</a></li>
+            <li class="active"><a href="exp2.html">Sub Experiment - 2</a></li>
+            <li><a href="exp3.html">Sub Experiment - 3</a></li>
+          </ul>
+        </div>
+
+        <div class="subheading-box">
+          <p class="title">From Independence to Correlation: A 2D Gaussian Visualization</p>
+        </div>
+
         <div class="v-collapsible-instruction-container v-instruction-container">
-          <div class="v-collapsible is-size-5">Instructions</div>
-          <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%">
-            <ul style="list-style: disc; font-size: 1em; line-height: 1.6;">
-                <li>
-                    This experiment demonstrates two key statistical properties of an AWGN signal.
-                </li>
-                <li>
-                    Use the **Noise Power** slider to set the variance (\(\sigma^2\)) of the Gaussian noise signal. Press **Generate New Signal** to create a new realization.
-                </li>
-                <li>
-                    The **Autocorrelation Plot** shows how correlated the signal is with a time-shifted version of itself. For white noise, this should be a sharp impulse at a time lag of 0, and nearly zero everywhere else.
-                </li>
-                <li>
-                    The **Power Spectral Density (PSD)** plot is the Fourier Transform of the autocorrelation. For white noise, the power is distributed evenly across all frequencies, resulting in a flat spectrum.
-                </li>
-                <li>
-                    Use the **Frequency Band** sliders to select a range of interest and see the calculated noise power within that band in the Observations panel.
-                </li>
+          <div class="v-collapsible is-size-4">Instructions</div>
+          <div class="v-content">
+            <p>This experiment visualizes the effect of correlation on the joint probability distribution of a noise signal.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">The 2D Joint Distribution</h4>
+            <ul style="list-style: disc">
+              <li>The main plot shows the <strong>2D joint probability distribution</strong> of two random variables, \(X_1\) and \(X_2\).</li>
+              <li><strong>Uncorrelated (\(\rho \approx 0\)):</strong> When two variables are statistically independent, their joint distribution is <strong>circularly symmetric</strong>. The value of \(X_1\) does not depend on the value of \(X_2\).</li>
+              <li><strong>Positively Correlated (\(\rho > 0\)):</strong> The distribution becomes an <strong>ellipse tilted to the right</strong>. This shows that a high value for \(X_1\) makes a high value for \(X_2\) more likely.</li>
+              <li><strong>Negatively Correlated (\(\rho < 0\)):</strong> The distribution is an <strong>ellipse tilted to the left</strong>. This shows that a high value for \(X_1\) makes a low value for \(X_2\) more likely (and vice versa).</li>
+            </ul>
+            <h4 style="font-weight: 600; font-size: 1.15em;">The Covariance Matrix</h4>
+            <p>The relationship between \(n\) random variables is described by an \(n \times n\) <strong>covariance matrix</strong>. The circular and elliptical contours you see are 2D representations of this matrix, which is displayed in the control panel.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">How to Interact</h4>
+            <ul style="list-style: disc;">
+                <li>Use the <strong>"Correlation Strength"</strong> slider to change the correlation coefficient \(\rho\) from -0.95 to +0.95.</li>
+                <li>Observe how the contours change from circles to ellipses and how the tilt of the ellipses changes based on the sign of \(\rho\).</li>
             </ul>
           </div>
         </div>
-      </div>
-    </div>
-    <br />
+        <br />
 
-    <section id="page2">
-      <div class="columns is-centered">
-        <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        <section id="page2">
           <div class="v-datalist-container components-list">
-            <h3 class="v-datalist-title" style="text-align: center;">
-              AWGN Analysis
-            </h3>
-
-            <div class="white-boxed-panel" style="margin: 0 1% 1.5rem 1%;">
-              <div class="controls-container">
-                <div class="field">
-                  <label for="noisePower" class="label">Noise Power (σ²):</label>
-                  <input type="range" id="noisePower" min="0.1" max="5" step="0.1" value="1.0" class="slider" />
-                  <span id="noisePowerVal" class="value-display">1.0</span>
+            <h3 class="v-datalist-title">Joint Distribution Analyzer</h3>
+            
+            <div class="white-boxed-panel">
+              <div class="analyzer-container">
+                <!-- Main Scatter Plot -->
+                <div class="main-plot">
+                    <div class="chart-wrapper"><canvas id="scatterPlot"></canvas></div>
                 </div>
-                <div class="field">
-                    <label class="label">Action:</label>
-                    <div class="buttons has-addons is-centered">
-                      <button id="generateBtn" class="button is-primary">Generate New Signal</button>
+                <!-- Controls and Side Plot -->
+                <div class="side-panel">
+                    <div class="control-panel">
+                        <label for="filterSlider" class="label">Correlation Strength (ρ)</label>
+                        <input id="filterSlider" class="slider" type="range" min="-95" max="95" value="0" step="1">
+                        <div id="status-box" class="status-box uncorrelated">
+                            <span>UNCORRELATED</span>
+                            <div class="rho-display" id="rhoDisplay">Correlation ρ = 0.000</div>
+                        </div>
+                        <!-- COVARIANCE MATRIX DISPLAY -->
+                        <div class="cov-matrix-container">
+                          <span>Covariance Matrix (Σ):</span>
+                          <div id="covMatrixDisplay" class="matrix">
+                              <div class="matrix-row">[ <span id="cov_11">1.00</span>, <span id="cov_12">0.00</span> ]</div>
+                              <div class="matrix-row">[ <span id="cov_21">0.00</span>, <span id="cov_22">1.00</span> ]</div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="side-plot">
+                         <h4 class="chart-title">Correlated Time-Domain Signal</h4>
+                        <div class="chart-wrapper" style="height: 180px;"><canvas id="timeSeriesChart"></canvas></div>
                     </div>
                 </div>
               </div>
             </div>
-
-            <!-- Plots Panel -->
-            <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
-                <div class="columns">
-                    <div class="column">
-                        <h5 class="has-text-centered is-size-5">Autocorrelation Function</h5>
-                        <div class="chart-wrapper" style="height: 350px;">
-                            <canvas id="autocorrelationChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <h5 class="has-text-centered is-size-5">Power Spectral Density (PSD)</h5>
-                        <div class="chart-wrapper" style="height: 350px;">
-                            <canvas id="psdChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Band Selection Panel -->
-            <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
-                <h4 class="v-datalist-subtitle">Calculate Power in a Frequency Band</h4>
-                 <div class="controls-container">
-                    <div class="field">
-                      <label for="startFreq" class="label">Start Frequency:</label>
-                      <input type="range" id="startFreq" min="0" max="511" step="1" value="50" class="slider" />
-                      <span id="startFreqVal" class="value-display">50</span>
-                    </div>
-                    <div class="field">
-                        <label for="endFreq" class="label">End Frequency:</label>
-                        <input type="range" id="endFreq" min="1" max="512" step="1" value="150" class="slider" />
-                        <span id="endFreqVal" class="value-display">150</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="white-boxed-panel" style="margin: 0 1.5% 1.5rem 1.5%;">
-              <h4 class="v-datalist-subtitle">Observations</h4>
-              <div id="observations" style="padding-top: 0.5rem; text-align: center;"></div>
-            </div>
           </div>
-        </div>
+        </section>
       </div>
-    </section>
+    </div>
   </div>
-
   <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
   <script src="./js/auto_psd.js"></script>
 </body>

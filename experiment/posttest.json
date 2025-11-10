@@ -101,7 +101,7 @@
         "d": "Incorrect. It's well-defined via Fourier transform."
       },
       "correctAnswer": "a",
-      "difficulty": "hard"
+      "difficulty": "advanced"
     }
   ]
 }
