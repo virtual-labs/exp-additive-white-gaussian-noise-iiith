@@ -1,5 +1,3 @@
-### The Theory of Additive White Gaussian Noise (AWGN)
-
 Additive White Gaussian Noise (AWGN) is a fundamental model used in information theory, signal processing, and communications engineering to represent the influence of random, unavoidable noise on a signal. Each component of its name—Additive, White, and Gaussian—describes a core mathematical property of the noise.
 
 #### 1. Additive: The Noise Combines by Addition
@@ -24,8 +22,8 @@ $$
 
 In this context:
 
-* **Mean ($\mu = 0$)**: Since the noise is random, its amplitude is equally likely to be positive or negative, resulting in an average value of zero over time.
-* **Variance ($\sigma^2$)**: This represents the average power of the noise. A higher variance means greater noise power and a wider, flatter bell curve.
+- **Mean ($\mu = 0$)**: Since the noise is random, its amplitude is equally likely to be positive or negative, resulting in an average value of zero over time.
+- **Variance ($\sigma^2$)**: This represents the average power of the noise. A higher variance means greater noise power and a wider, flatter bell curve.
 
 #### 3. White: Uniform Power in the Frequency Domain
 
@@ -35,8 +33,8 @@ The term "white" is an analogy to white light, which contains all frequencies of
 
 For white noise, the signal is completely uncorrelated with its value at any other instant.
 
-* For any time lag $\tau \neq 0$, the correlation is zero.
-* For a time lag of $\tau = 0$, the correlation is perfect, and the value is the average power of the noise, $\sigma^2$.
+- For any time lag $\tau \neq 0$, the correlation is zero.
+- For a time lag of $\tau = 0$, the correlation is perfect, and the value is the average power of the noise, $\sigma^2$.
 
 This is mathematically modeled using the **Dirac delta function**, $\delta(\tau)$, which is an infinitely sharp spike at zero and zero everywhere else.
 
@@ -60,8 +58,8 @@ Here, $N_0$ is a fundamental constant representing the **power spectral density 
 
 **Significance of a Constant PSD:**
 
-* **Uniform Power Distribution**: A flat PSD means that the noise contributes an equal amount of power at every frequency. This is why filtering is effective: by restricting the frequency range (the bandwidth), we can reduce the total amount of noise power affecting the signal.
-* **Infinite Power (Theoretical)**: An ideal white noise signal with a perfectly flat PSD over an infinite bandwidth would have infinite total power. In reality, all physical systems have a finite bandwidth, so the noise power is always finite.
+- **Uniform Power Distribution**: A flat PSD means that the noise contributes an equal amount of power at every frequency. This is why filtering is effective: by restricting the frequency range (the bandwidth), we can reduce the total amount of noise power affecting the signal.
+- **Infinite Power (Theoretical)**: An ideal white noise signal with a perfectly flat PSD over an infinite bandwidth would have infinite total power. In reality, all physical systems have a finite bandwidth, so the noise power is always finite.
 
 **Calculating Noise Power in a Bandwidth:**
 The total noise power, $P_N$, within a specific frequency bandwidth, $B$, can be calculated by integrating the PSD over that bandwidth. For a system with a bandwidth $B$, the noise power is:
@@ -82,6 +80,6 @@ This simple, linear relationship shows that the total noise power in a system is
 
 AWGN is not just a theoretical convenience; it is an accurate model for many real-world sources of random noise, including:
 
-* **Thermal Noise (Johnson-Nyquist Noise)**: Arises from the thermal agitation of charge carriers (usually electrons) inside an electrical conductor at temperatures above absolute zero. This is a primary source of noise in electronic components like resistors, amplifiers, and sensors.
-* **Shot Noise**: Occurs due to the discrete nature of electric charge in electronic devices like diodes and transistors. The random arrival of electrons or holes at a junction creates a fluctuating current.
-* **Atmospheric and Deep Space Noise**: Electromagnetic waves radiated by the Earth's atmosphere, the sun, and other celestial objects (like black-body radiation) are often modeled as AWGN, especially in satellite and deep-space communication links.
+- **Thermal Noise (Johnson-Nyquist Noise)**: Arises from the thermal agitation of charge carriers (usually electrons) inside an electrical conductor at temperatures above absolute zero. This is a primary source of noise in electronic components like resistors, amplifiers, and sensors.
+- **Shot Noise**: Occurs due to the discrete nature of electric charge in electronic devices like diodes and transistors. The random arrival of electrons or holes at a junction creates a fluctuating current.
+- **Atmospheric and Deep Space Noise**: Electromagnetic waves radiated by the Earth's atmosphere, the sun, and other celestial objects (like black-body radiation) are often modeled as AWGN, especially in satellite and deep-space communication links.
