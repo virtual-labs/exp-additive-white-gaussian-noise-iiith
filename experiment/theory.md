@@ -1,11 +1,13 @@
-Additive White Gaussian Noise (AWGN) is a fundamental model used in information theory, signal processing, and communications engineering to represent the influence of random, unavoidable noise on a signal. Each component of its name—Additive, White, and Gaussian—describes a core mathematical property of the noise.
+Additive White Gaussian Noise (AWGN) is a fundamental model used in information theory, signal processing, and communications engineering to represent the influence of random, unavoidable noise on a signal. Each component of its name Additive, White, and Gaussian describes a core mathematical property of the noise.
 
 #### 1. Additive: The Noise Combines by Addition
 
 The term "additive" implies that the noise, $N(t)$, is simply added to the original signal, $S(t)$, to produce the received signal, $Y(t)$.
 
 $$
-Y(t) = S(t) + N(t) \tag{1}
+\begin{equation}
+Y(t) = S(t) + N(t)
+\end{equation}
 $$
 
 This linear combination is the simplest way a signal can be corrupted. The model assumes that the noise is independent of the signal and is not influenced by it in any multiplicative or more complex way.
@@ -17,7 +19,9 @@ The "Gaussian" property describes the statistical distribution of the noise's am
 The Probability Density Function (PDF) for a Gaussian random variable with a mean ($\mu$) of zero and a variance of $\sigma^2$ is given by:
 
 $$
-f_N(n) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{n^2}{2\sigma^2}\right) \tag{2}
+\begin{equation}
+f_N(n) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{n^2}{2\sigma^2}\right)
+\end{equation}
 $$
 
 In this context:
@@ -39,7 +43,9 @@ For white noise, the signal is completely uncorrelated with its value at any oth
 This is mathematically modeled using the **Dirac delta function**, $\delta(\tau)$, which is an infinitely sharp spike at zero and zero everywhere else.
 
 $$
-R_N(\tau) = E[N(t)N(t+\tau)] = \frac{N_0}{2} \delta(\tau) \tag{3}
+\begin{equation}
+R_N(\tau) = E[N(t)N(t+\tau)] = \frac{N_0}{2} \delta(\tau)
+\end{equation}
 $$
 
 The **Wiener-Khinchin Theorem** establishes the link between the two domains: it states that the PSD is the Fourier Transform of the autocorrelation function. Taking the Fourier Transform of the delta function in the time domain results in a constant value in the frequency domain, perfectly describing the flat PSD of white noise.
@@ -51,7 +57,9 @@ The Power Spectral Density (PSD), denoted $S_N(f)$, describes how the power of a
 The PSD is formally given by:
 
 $$
-S_N(f) = \frac{N_0}{2} \quad (\text{for all } f) \tag{4}
+\begin{equation}
+S_N(f) = \frac{N_0}{2} \quad (\text{for all } f)
+\end{equation}
 $$
 
 Here, $N_0$ is a fundamental constant representing the **power spectral density in Watts per Hertz (W/Hz)**. The factor of 2 in the denominator accounts for the two-sided nature of the frequency spectrum (both positive and negative frequencies).
@@ -65,13 +73,17 @@ Here, $N_0$ is a fundamental constant representing the **power spectral density 
 The total noise power, $P_N$, within a specific frequency bandwidth, $B$, can be calculated by integrating the PSD over that bandwidth. For a system with a bandwidth $B$, the noise power is:
 
 $$
-P_N = \int_{-B/2}^{B/2} S_N(f) \, df = \int_{-B/2}^{B/2} \frac{N_0}{2} \, df = \frac{N_0}{2} \times B \tag{5}
+\begin{equation}
+P_N = \int_{-B/2}^{B/2} S_N(f) \, df = \int_{-B/2}^{B/2} \frac{N_0}{2} \, df = \frac{N_0}{2} \times B
+\end{equation}
 $$
 
 For a passband system (using only positive frequencies), the power is often expressed as:
 
 $$
-P_N = N_0 \times B \tag{6}
+\begin{equation}
+P_N = N_0 \times B
+\end{equation}
 $$
 
 This simple, linear relationship shows that the total noise power in a system is directly proportional to its bandwidth.
