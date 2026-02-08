@@ -41,6 +41,24 @@
       max-width: 500px; /* Example max width */
       margin: auto;
     }
+    /* Button Style */
+    .action-btn {
+        background-color: #d9534f; /* Red for Stop initially */
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: 600;
+    }
+    .action-btn:hover {
+        opacity: 0.9;
+    }
+    .action-btn.stopped {
+        background-color: #5cb85c; /* Green for Start */
+    }
   </style>
 </head>
 <body>
@@ -78,6 +96,7 @@
             <ul style="list-style: disc;">
                 <li>Use the <strong>"Correlation Strength"</strong> slider to change the correlation coefficient \(\rho\) from -0.95 to +0.95.</li>
                 <li>Observe how the contours change from circles to ellipses and how the tilt of the ellipses changes based on the sign of \(\rho\).</li>
+                <li>Use the <strong>Start/Stop</strong> button to pause the visualization.</li>
             </ul>
           </div>
         </div>
@@ -110,6 +129,8 @@
                               <div class="matrix-row">[ <span id="cov_21">0.00</span>, <span id="cov_22">1.00</span> ]</div>
                           </div>
                       </div>
+                      <!-- START/STOP BUTTON -->
+                      <button id="startStopBtn" class="action-btn">Stop Experiment</button>
                     </div>
                     <div class="side-plot">
                          <h4 class="chart-title">Correlated Time-Domain Signal</h4>

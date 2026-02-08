@@ -8,11 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const cov21 = document.getElementById('cov_21');
     const cov22 = document.getElementById('cov_22');
     
+    // Start/Stop Button
+    const startStopBtn = document.getElementById('startStopBtn');
+    
     const scatterCtx = document.getElementById('scatterPlot').getContext('2d');
     const timeCtx = document.getElementById('timeSeriesChart').getContext('2d');
 
     let scatterChart, timeChart;
     let animationFrameId;
+    let isRunning = true; // State to track animation
 
     const NUM_SCATTER_POINTS = 200;
     const NUM_TIME_POINTS = 256;
@@ -134,8 +138,27 @@ document.addEventListener('DOMContentLoaded', () => {
         scatterChart.update('none');
         timeChart.update('none');
         
-        animationFrameId = requestAnimationFrame(animate);
+        if (isRunning) {
+            animationFrameId = requestAnimationFrame(animate);
+        }
     };
+
+    // --- Start/Stop Handler ---
+    startStopBtn.addEventListener('click', () => {
+        if (isRunning) {
+            // Stop
+            cancelAnimationFrame(animationFrameId);
+            isRunning = false;
+            startStopBtn.textContent = 'Start Experiment';
+            startStopBtn.classList.add('stopped');
+        } else {
+            // Start
+            isRunning = true;
+            animate();
+            startStopBtn.textContent = 'Stop Experiment';
+            startStopBtn.classList.remove('stopped');
+        }
+    });
 
     initializeCharts();
     animate();
