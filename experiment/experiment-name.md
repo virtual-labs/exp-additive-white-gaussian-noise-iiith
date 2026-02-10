@@ -1,1 +1,1 @@
-## Experiment name
+## Additive White Gaussian Noise

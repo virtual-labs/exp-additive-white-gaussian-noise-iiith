@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <!-- SCRIPT FOR MATH RENDERING - THIS LINE WAS ADDED -->
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <title>Noise Correlation & Gaussian Contours</title>
+  <style>
+    /* Added styles for covariance matrix and square plot */
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem; /* Space between control elements */
+    }
+    .cov-matrix-container {
+        padding: 10px;
+        border: 1px solid #dbdbdb;
+        border-radius: 6px;
+        text-align: center;
+        background-color: #f9f9f9;
+    }
+    .cov-matrix-container span {
+        font-weight: 600;
+        font-size: 0.9em;
+        color: #363636;
+    }
+    .matrix {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.1em;
+        margin-top: 5px;
+        line-height: 1.5;
+    }
+    .main-plot .chart-wrapper {
+      position: relative;
+      /* Removed fixed height to allow aspect ratio to work */
+      max-width: 500px; /* Example max width */
+      margin: auto;
+    }
+    /* Button Style */
+    .action-btn {
+        background-color: #d9534f; /* Red for Stop initially */
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: 600;
+    }
+    .action-btn:hover {
+        opacity: 0.9;
+    }
+    .action-btn.stopped {
+        background-color: #5cb85c; /* Green for Start */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tasks-heading">Tasks</div>
+    <div class="columns is-centered">
+      <div class="column is-11-desktop is-12-tablet is-12-mobile">
+        
+        <div class="v-tabs">
+          <ul>
+            <li><a href="exp1.html">Sub Experiment - 1</a></li>
+            <li class="active"><a href="exp2.html">Sub Experiment - 2</a></li>
+            <li><a href="exp3.html">Sub Experiment - 3</a></li>
+          </ul>
+        </div>
+
+        <div class="subheading-box">
+          <p class="title">From Independence to Correlation: A 2D Gaussian Visualization</p>
+        </div>
+
+        <div class="v-collapsible-instruction-container v-instruction-container">
+          <div class="v-collapsible is-size-4">Instructions</div>
+          <div class="v-content">
+            <p>This experiment visualizes the effect of correlation on the joint probability distribution of a noise signal.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">The 2D Joint Distribution</h4>
+            <ul style="list-style: disc">
+              <li>The main plot shows the <strong>2D joint probability distribution</strong> of two random variables, \(X_1\) and \(X_2\).</li>
+              <li><strong>Uncorrelated (\(\rho \approx 0\)):</strong> When two variables are statistically independent, their joint distribution is <strong>circularly symmetric</strong>. The value of \(X_1\) does not depend on the value of \(X_2\).</li>
+              <li><strong>Positively Correlated (\(\rho > 0\)):</strong> The distribution becomes an <strong>ellipse tilted to the right</strong>. This shows that a high value for \(X_1\) makes a high value for \(X_2\) more likely.</li>
+              <li><strong>Negatively Correlated (\(\rho < 0\)):</strong> The distribution is an <strong>ellipse tilted to the left</strong>. This shows that a high value for \(X_1\) makes a low value for \(X_2\) more likely (and vice versa).</li>
+            </ul>
+            <h4 style="font-weight: 600; font-size: 1.15em;">The Covariance Matrix</h4>
+            <p>The relationship between \(n\) random variables is described by an \(n \times n\) <strong>covariance matrix</strong>. The circular and elliptical contours you see are 2D representations of this matrix, which is displayed in the control panel.</p>
+            <h4 style="font-weight: 600; font-size: 1.15em;">How to Interact</h4>
+            <ul style="list-style: disc;">
+                <li>Use the <strong>"Correlation Strength"</strong> slider to change the correlation coefficient \(\rho\) from -0.95 to +0.95.</li>
+                <li>Observe how the contours change from circles to ellipses and how the tilt of the ellipses changes based on the sign of \(\rho\).</li>
+                <li>Use the <strong>Start/Stop</strong> button to pause the visualization.</li>
+            </ul>
+          </div>
+        </div>
+        <br />
+
+        <section id="page2">
+          <div class="v-datalist-container components-list">
+            <h3 class="v-datalist-title">Joint Distribution Analyzer</h3>
+            
+            <div class="white-boxed-panel">
+              <div class="analyzer-container">
+                <!-- Main Scatter Plot -->
+                <div class="main-plot">
+                    <div class="chart-wrapper"><canvas id="scatterPlot"></canvas></div>
+                </div>
+                <!-- Controls and Side Plot -->
+                <div class="side-panel">
+                    <div class="control-panel">
+                        <label for="filterSlider" class="label">Correlation Strength (ρ)</label>
+                        <input id="filterSlider" class="slider" type="range" min="-95" max="95" value="0" step="1">
+                        <div id="status-box" class="status-box uncorrelated">
+                            <span>UNCORRELATED</span>
+                            <div class="rho-display" id="rhoDisplay">Correlation ρ = 0.000</div>
+                        </div>
+                        <!-- COVARIANCE MATRIX DISPLAY -->
+                        <div class="cov-matrix-container">
+                          <span>Covariance Matrix (Σ):</span>
+                          <div id="covMatrixDisplay" class="matrix">
+                              <div class="matrix-row">[ <span id="cov_11">1.00</span>, <span id="cov_12">0.00</span> ]</div>
+                              <div class="matrix-row">[ <span id="cov_21">0.00</span>, <span id="cov_22">1.00</span> ]</div>
+                          </div>
+                      </div>
+                      <!-- START/STOP BUTTON -->
+                      <button id="startStopBtn" class="action-btn">Stop Experiment</button>
+                    </div>
+                    <div class="side-plot">
+                         <h4 class="chart-title">Correlated Time-Domain Signal</h4>
+                        <div class="chart-wrapper" style="height: 180px;"><canvas id="timeSeriesChart"></canvas></div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
+  <script src="./js/auto_psd.js"></script>
+</body>
+</html>

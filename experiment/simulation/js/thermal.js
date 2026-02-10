@@ -1,0 +1,303 @@
+// --------------------------------------
+// 1. References & Global Variables
+// --------------------------------------
+const animationContainer = document.getElementById("animationContainer");
+const conductorCanvas = document.getElementById("conductorCanvas");
+const conductorCtx = conductorCanvas.getContext("2d");
+const histogramChartCtx = document.getElementById("histogramChart").getContext("2d");
+
+let histogramChart;
+let electrons = [];
+let noiseVoltageSamples = [];
+const electronImage = new Image();
+electronImage.src = './images/electron.png';
+
+// Physical Constants
+const BOLTZMANN_K = 1.380649e-23; // J/K
+const TEMPERATURE_K = 300; // K
+const RESISTANCE_R = 50; // Ohms
+const BANDWIDTH_B = 10e6; // Hz (10 MHz)
+
+// Simulation Controls
+let numElectrons = 200;
+let simulationIsRunning = false;
+let sampleCollectionInterval;
+let animationFrameId;
+
+// DOM Elements
+const electronsSlider = document.getElementById("electrons"), electronsVal = document.getElementById("electronsVal");
+const startBtn = document.getElementById("startBtn"), stopBtn = document.getElementById("stopBtn"), resetBtn = document.getElementById("resetBtn");
+const observationsDiv = document.getElementById("observations");
+
+// --------------------------------------
+// 2. Utility & Physics Functions
+// --------------------------------------
+
+function calculateTheoreticalVariance() {
+    const variance_volts_squared = 4 * BOLTZMANN_K * TEMPERATURE_K * RESISTANCE_R * BANDWIDTH_B;
+    // Convert from Volts^2 to (microVolts)^2 for display and comparison
+    return variance_volts_squared * 1e12; 
+}
+
+const THEORETICAL_VARIANCE = calculateTheoreticalVariance();
+const THEORETICAL_STD_DEV = Math.sqrt(THEORETICAL_VARIANCE);
+
+function gaussianPDF(x, mean, stdDev) {
+    if (stdDev <= 0) return 0;
+    const variance = stdDev * stdDev;
+    return (1 / (Math.sqrt(2 * Math.PI * variance))) * Math.exp(-Math.pow(x - mean, 2) / (2 * variance));
+}
+
+function calculateMeanAndStdDev(data) {
+    if (data.length < 2) return { mean: 0, stdDev: 0 };
+    const mean = data.reduce((a, b) => a + b, 0) / data.length;
+    const stdDev = Math.sqrt(data.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / (data.length - 1));
+    return { mean, stdDev };
+}
+
+// --------------------------------------
+// 3. Chart & Canvas Initialization
+// --------------------------------------
+function initializeHistogram() {
+    if (histogramChart) histogramChart.destroy();
+    histogramChart = new Chart(histogramChartCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [
+                { label: 'Simulated Density', data: [], backgroundColor: 'rgba(30, 144, 255, 0.6)' },
+                { label: `Theoretical Gaussian PDF`, data: [], type: 'line', borderColor: 'rgba(255, 159, 64, 1)', borderWidth: 3, pointRadius: 0, fill: false }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: "Noise Voltage (μV)" } },
+                y: { title: { display: true, text: "Probability Density" }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+function setupCanvas() {
+    conductorCanvas.width = animationContainer.clientWidth;
+    conductorCanvas.height = animationContainer.clientHeight;
+}
+
+// --------------------------------------
+// 4. Electron & Simulation Logic
+// --------------------------------------
+function createElectrons() {
+    electrons = [];
+    const w = conductorCanvas.width;
+    const h = conductorCanvas.height;
+    const conductorTop = h * 0.1;
+    const conductorHeight = h * 0.8;
+
+    for (let i = 0; i < numElectrons; i++) {
+        electrons.push({
+            x: Math.random() * w,
+            y: conductorTop + Math.random() * conductorHeight,
+            // Start with random initial velocity
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+        });
+    }
+}
+
+function updateElectrons() {
+    const w = conductorCanvas.width;
+    const h = conductorCanvas.height;
+    const conductorTop = h * 0.1;
+    const conductorBottom = h * 0.9;
+
+    // --- CORRECTED PHYSICS ---
+    // The damping term must be applied BEFORE the thermal kick.
+    // This ensures the steady-state variance of vx and vy is exactly 1.
+    const damping = 0.95;
+    const thermalKick = Math.sqrt(1 - damping * damping) * Math.sqrt(12);
+
+    for (const e of electrons) {
+        // 1. Apply damping to simulate energy loss
+        e.vx *= damping; 
+        e.vy *= damping;
+
+        // 2. Apply random thermal kick to simulate thermal energy input
+        e.vx += (Math.random() - 0.5) * thermalKick;
+        e.vy += (Math.random() - 0.5) * thermalKick;
+
+        // 3. Update position
+        e.x += e.vx; 
+        e.y += e.vy;
+
+        // Boundary conditions
+        if (e.x > w) e.x = 0;
+        if (e.x < 0) e.x = w;
+
+        if (e.y < conductorTop || e.y > conductorBottom) {
+            e.vy *= -1; // Reflect off top/bottom
+            e.y = Math.max(conductorTop, Math.min(e.y, conductorBottom));
+        }
+    }
+}
+
+function collectVoltageSample() {
+    if (electrons.length === 0) return;
+    const sumOfVelocities = electrons.reduce((sum, e) => sum + e.vx, 0);
+    
+    // This scaling is correct because the variance of vx is now calibrated to 1.
+    const scalingFactor = THEORETICAL_STD_DEV / Math.sqrt(numElectrons);
+    
+    const voltageSample = sumOfVelocities * scalingFactor;
+    noiseVoltageSamples.push(voltageSample);
+    
+    // Update charts and observations less frequently to save performance
+    if (noiseVoltageSamples.length % 5 === 0) {
+        updateHistogramChart();
+        updateObservations();
+    }
+}
+
+// --------------------------------------
+// 5. Main Loop & Event Handlers
+// --------------------------------------
+function simulationLoop() {
+    updateElectrons();
+    drawScene();
+    animationFrameId = requestAnimationFrame(simulationLoop);
+}
+
+startBtn.addEventListener('click', () => {
+    if (simulationIsRunning) return;
+    simulationIsRunning = true;
+    startBtn.disabled = true; stopBtn.disabled = false; electronsSlider.disabled = true;
+    sampleCollectionInterval = setInterval(collectVoltageSample, 100);
+    simulationLoop();
+});
+
+stopBtn.addEventListener('click', () => {
+    if (!simulationIsRunning) return;
+    simulationIsRunning = false;
+    startBtn.disabled = false; stopBtn.disabled = true; electronsSlider.disabled = false;
+    clearInterval(sampleCollectionInterval);
+    cancelAnimationFrame(animationFrameId);
+});
+
+resetBtn.addEventListener('click', () => {
+    stopBtn.click(); // Stop the simulation if running
+    stopBtn.disabled = true;
+    
+    numElectrons = parseInt(electronsSlider.value);
+    noiseVoltageSamples = [];
+    
+    setupCanvas();
+    createElectrons();
+    initializeHistogram();
+    updateObservations();
+    drawScene(); // Draw the initial state
+});
+
+electronsSlider.oninput = () => {
+    numElectrons = parseInt(electronsSlider.value);
+    electronsVal.textContent = numElectrons;
+    if (!simulationIsRunning) {
+        resetBtn.click();
+    }
+};
+
+// --------------------------------------
+// 6. Update & Drawing Functions
+// --------------------------------------
+function drawScene() {
+    const w = conductorCanvas.width;
+    const h = conductorCanvas.height;
+    const conductorTop = h * 0.1;
+    const conductorHeight = h * 0.8;
+
+    // Clear canvas with a background color
+    conductorCtx.fillStyle = '#f0f8ff';
+    conductorCtx.fillRect(0, 0, w, h);
+
+    // Draw the conductor body
+    conductorCtx.fillStyle = '#d3d3d3';
+    conductorCtx.fillRect(0, conductorTop, w, conductorHeight);
+    
+    // Draw conductor boundaries
+    conductorCtx.fillStyle = '#a9a9a9';
+    conductorCtx.fillRect(0, conductorTop - 2, w, 2);
+    conductorCtx.fillRect(0, conductorTop + conductorHeight, w, 2);
+    
+    // Draw electrons if the image is loaded
+    if (electronImage.complete && electronImage.naturalHeight !== 0) {
+        for (const e of electrons) {
+            // Center the 10x10 image on the electron's x,y coordinates
+            conductorCtx.drawImage(electronImage, e.x - 5, e.y - 5, 10, 10);
+        }
+    }
+}
+
+function updateHistogramChart() {
+    if (noiseVoltageSamples.length < 20) return;
+
+    const stableMin = -5 * THEORETICAL_STD_DEV, stableMax = 5 * THEORETICAL_STD_DEV;
+    const numBins = 50;
+    const binWidth = (stableMax - stableMin) / numBins;
+    if (binWidth <= 0) return;
+
+    const bins = new Array(numBins).fill(0);
+    const labels = bins.map((_, i) => (stableMin + (i + 0.5) * binWidth));
+    
+    noiseVoltageSamples.forEach(v => {
+        const binIndex = Math.floor((v - stableMin) / binWidth);
+        if (binIndex >= 0 && binIndex < numBins) bins[binIndex]++;
+    });
+
+    const totalSamples = noiseVoltageSamples.length;
+    const densityData = bins.map(count => count / (totalSamples * binWidth));
+    const theoreticalData = labels.map(label => gaussianPDF(label, 0, THEORETICAL_STD_DEV));
+    
+    histogramChart.data.labels = labels.map(l => l.toFixed(4));
+    histogramChart.data.datasets[0].data = densityData;
+    histogramChart.data.datasets[1].data = theoreticalData;
+    histogramChart.update('none'); // Use 'none' for a smoother update
+}
+
+function updateObservations() {
+    const { mean, stdDev } = calculateMeanAndStdDev(noiseVoltageSamples);
+    const sampleVariance = stdDev * stdDev;
+    observationsDiv.innerHTML = `
+        <div class="columns is-centered is-vcentered">
+            <div class="column has-text-centered">
+                <h5 class="is-size-5 has-text-weight-semibold">Theoretical Values</h5>
+                <p>Mean (μ): 0.00000 μV</p>
+                <p>Variance (σ²): ${THEORETICAL_VARIANCE.toFixed(5)} (μV)²</p>
+            </div>
+            <div class="column has-text-centered">
+                <h5 class="is-size-5 has-text-weight-semibold">Simulated Values</h5>
+                <p>Samples: ${noiseVoltageSamples.length}</p>
+                <p>Sample Mean: ${mean.toFixed(5)} μV</p>
+                <p>Sample Variance: ${sampleVariance.toFixed(5)} (μV)²</p>
+            </div>
+        </div>`;
+}
+
+// --------------------------------------
+// 7. Initial Load
+// --------------------------------------
+window.addEventListener("load", () => {
+    electronsVal.textContent = electronsSlider.value;
+    numElectrons = parseInt(electronsSlider.value);
+    
+    // Ensure the initial scene is drawn after the image has loaded
+    electronImage.onload = () => {
+        resetBtn.click();
+    };
+    // If the image is already cached/loaded, trigger reset immediately
+    if (electronImage.complete) {
+        resetBtn.click();
+    }
+});
+
+window.addEventListener('resize', () => {
+    resetBtn.click(); 
+});

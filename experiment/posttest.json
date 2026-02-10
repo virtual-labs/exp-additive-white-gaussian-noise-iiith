@@ -2,38 +2,107 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "If the one-sided power spectral density of AWGN is $$N_0 = 4 × 10^{-9}$$ W/Hz, what is the autocorrelation Rₙ(0) at $$\\tau$$ = 0?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "2 × 10⁻⁹",
+        "b": "4 × 10⁻⁹",
+        "c": "8 × 10⁻⁹",
+        "d": "0"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Correct. Rn(0) = N0 / 2 for white Gaussian noise autocorrelation. <a href='https://en.wikipedia.org/wiki/Additive_white_Gaussian_noise#Autocorrelation_function'>Ref</a>",
+        "b": "Incorrect. This is the one-sided PSD, not the autocorrelation value.",
+        "c": "Incorrect. Too high.",
+        "d": "Incorrect. Rn($$\\tau$$) is zero for $$\\tau$$ ≠ 0, not at $$\\tau$$ = 0."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "What is the unit of autocorrelation Rn($$\\tau$$) for a noise process measured in volts?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Volts",
+        "b": "Volts/Hz",
+        "c": "Volts²",
+        "d": "No unit"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. That's the unit of the signal, not its autocorrelation.",
+        "b": "Incorrect. That's the unit of PSD.",
+        "c": "Correct. Autocorrelation is the expected value of the product of voltage values, hence unit is V². <a href='https://en.wikipedia.org/wiki/Autocorrelation'>Reference</a>",
+        "d": "Incorrect. It does have physical units."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"
+    },
+    {
+      "question": "At T = 290 K and bandwidth B = 2 MHz, what is the thermal noise power using kTB?",
+      "answers": {
+        "a": "8.0 × 10⁻¹⁵ W",
+        "b": "1.0 × 10⁻¹⁴ W",
+        "c": "5.0 × 10⁻¹⁵ W",
+        "d": "3.0 × 10⁻¹⁵ W"
+      },
+      "explanations": {
+        "a": "Correct. kTB = (1.38e-23)*(290)*(2e6) ≈ 8.0e-15 W. <a href='https://en.wikipedia.org/wiki/Thermal_noise'>Formula here</a>",
+        "b": "Incorrect. Slight overestimate.",
+        "c": "Incorrect. Too low for given T and B.",
+        "d": "Incorrect. That’s much lower."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the root mean square (RMS) thermal noise voltage across a 50 $$\\Omega$$ resistor with thermal noise power of 4×10⁻¹⁵ W?",
+      "answers": {
+        "a": "0.632 $$\\mu$$V",
+        "b": "14.1 $$\\mu$$V",
+        "c": "0.447 $$\\mu$$V",
+        "d": "100 $$\\mu$$V"
+      },
+      "explanations": {
+        "a": "Correct. V_rms = sqrt(P × R) = sqrt(4e-15 × 50) = sqrt(2e-13) ≈ 0.632 μV.",
+        "b": "Incorrect. This would be much higher noise power.",
+        "c": "Incorrect. That’s for a different power value.",
+        "d": "Incorrect. Far too high for thermal noise."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which value best represents the autocorrelation Rn($$\\tau$$) of AWGN for $$\\tau$$ ≠ 0?",
+      "answers": {
+        "a": "Equal to Rn(0)",
+        "b": "A constant non-zero value",
+        "c": "Zero",
+        "d": "1/N0"
+      },
+      "explanations": {
+        "a": "Incorrect. Rn($$\\tau$$) = 0 for $$\\tau$$ ≠ 0 in white noise.",
+        "b": "Incorrect. There is no memory; correlation vanishes outside $$\\tau$$ = 0.",
+        "c": "Correct. AWGN is uncorrelated at non-zero lag, so Rn($$\\tau$$) = 0 for $$\\tau$$ ≠ 0. <a href='https://en.wikipedia.org/wiki/Additive_white_Gaussian_noise#Mathematical_description'>See here</a>",
+        "d": "Incorrect. That’s not the autocorrelation value."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "For a lab-measured autocorrelation function Rn($$\\tau$$) = 1×10⁻⁹ $$\\delta$$($$\\tau$$), what is the corresponding two-sided power spectral density of the AWGN?",
+      
+      "answers": {
+        "a": "2 × 10⁻⁹ W/Hz",
+        "b": "1 × 10⁻⁹ W/Hz",
+        "c": "0.5 × 10⁻⁹ W/Hz",
+        "d": "Undefined"
+      },
+      "explanations": {
+        "a": "Correct. Since Rn(0) = N0/2 = 1×10⁻⁹, then N0 = 2×10⁻⁹. <a href='https://en.wikipedia.org/wiki/Power_spectral_density#Examples'>Reference</a>",
+        "b": "Incorrect. That’s the delta coefficient (N0/2).",
+        "c": "Incorrect. Too low.",
+        "d": "Incorrect. It's well-defined via Fourier transform."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
     }
   ]
 }
