@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "If the one-sided power spectral density of AWGN is $$N_0 = 4 × 10^{-9}$$ W/Hz, what is the autocorrelation Rₙ(0) at $$\\tau$$ = 0?",
+      "question": "1: If the one-sided power spectral density of AWGN is $$N_0 = 4 × 10^{-9} W/Hz$$, what is the autocorrelation $$R_n(0)$$ at $$\\tau = 0$$?",
       "answers": {
         "a": "2 × 10⁻⁹",
         "b": "4 × 10⁻⁹",
@@ -19,7 +19,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "What is the unit of autocorrelation Rn($$\\tau$$) for a noise process measured in volts?",
+      "question": "2: What is the unit of autocorrelation $$R_n(\\tau)$$ for a noise process measured in volts?",
       "answers": {
         "a": "Volts",
         "b": "Volts/Hz",
@@ -36,7 +36,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "At T = 290 K and bandwidth B = 2 MHz, what is the thermal noise power using kTB?",
+      "question": "3: At T = 290 K and bandwidth B = 2 MHz, what is the thermal noise power using kTB?",
       "answers": {
         "a": "8.0 × 10⁻¹⁵ W",
         "b": "1.0 × 10⁻¹⁴ W",
@@ -53,12 +53,12 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What is the root mean square (RMS) thermal noise voltage across a 50 $$\\Omega$$ resistor with thermal noise power of 4×10⁻¹⁵ W?",
+      "question": "4: What is the root mean square (RMS) thermal noise voltage across a $$50 \\Omega$$ resistor with thermal noise power of $$ 4×10^{-15}$$ W?",
       "answers": {
-        "a": "0.632 $$\\mu$$V",
-        "b": "14.1 $$\\mu$$V",
-        "c": "0.447 $$\\mu$$V",
-        "d": "100 $$\\mu$$V"
+        "a": "$$ 0.632 \\mu$$V",
+        "b": "$$ 14.1  \\mu$$V",
+        "c": "$$ 0.447 \\mu$$V",
+        "d": "$$ 100   \\mu$$V"
       },
       "explanations": {
         "a": "Correct. V_rms = sqrt(P × R) = sqrt(4e-15 × 50) = sqrt(2e-13) ≈ 0.632 μV.",
@@ -70,7 +70,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which value best represents the autocorrelation Rn($$\\tau$$) of AWGN for $$\\tau$$ ≠ 0?",
+      "question": "5: Which value best represents the autocorrelation $$R_n(\\tau$$) of AWGN for $$\\tau ≠ 0$$?",
       "answers": {
         "a": "Equal to Rn(0)",
         "b": "A constant non-zero value",
@@ -87,7 +87,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "For a lab-measured autocorrelation function Rn($$\\tau$$) = 1×10⁻⁹ $$\\delta$$($$\\tau$$), what is the corresponding two-sided power spectral density of the AWGN?",
+      "question": "6: For a lab-measured autocorrelation function Rn($$\\tau$$) = 1×10^{-9} $$\\delta(\\tau)$$, what is the corresponding two-sided power spectral density of the AWGN?",
       
       "answers": {
         "a": "2 × 10⁻⁹ W/Hz",

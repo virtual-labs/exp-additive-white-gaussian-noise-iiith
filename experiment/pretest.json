@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What does 'white' refer to in Additive White Gaussian Noise (AWGN)?",
+      "question": "1: What does 'white' refer to in Additive White Gaussian Noise (AWGN)?",
       "answers": {
         "a": "The amplitude is always constant",
         "b": "The noise power is concentrated at one frequency",
@@ -19,7 +19,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "Which statistical distribution characterizes the amplitude of AWGN in time domain?",
+      "question": "2: Which statistical distribution characterizes the amplitude of AWGN in time domain?",
       "answers": {
         "a": "Uniform distribution",
         "b": "Poisson distribution",
@@ -36,7 +36,7 @@
       "difficulty": "beginner"
     },
     {
-      "question": "How does thermal noise in resistors relate to AWGN?",
+      "question": "3: How does thermal noise in resistors relate to AWGN?",
       "answers": {
         "a": "It is non-Gaussian and non-stationary",
         "b": "It is modeled as AWGN with a flat PSD due to random thermal agitation",
@@ -53,7 +53,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which of the following best describes the autocorrelation function Rn(τ) of ideal AWGN?",
+      "question": "4: Which of the following best describes the autocorrelation function Rn(τ) of ideal AWGN?",
       "answers": {
         "a": "A decaying exponential",
         "b": "A sinc function",
@@ -70,7 +70,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Why does the power spectral density (PSD) of AWGN appear flat across frequencies?",
+      "question": "5: Why does the power spectral density (PSD) of AWGN appear flat across frequencies?",
       "answers": {
         "a": "Because it contains harmonics of the input signal",
         "b": "Due to its deterministic structure",
@@ -87,7 +87,7 @@
       "difficulty": "advanced"
     },
     {
-      "question": "In a communication system, how does AWGN affect the performance at high SNR levels?",
+      "question": "6:In a communication system, how does AWGN affect the performance at high SNR levels?",
       "answers": {
         "a": "It becomes negligible and introduces no bit errors",
         "b": "It causes significant inter-symbol interference",
